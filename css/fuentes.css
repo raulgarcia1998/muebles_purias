@@ -1,0 +1,100 @@
+/* ═══════════════════════════════════════════════════════════════════
+   TIPOGRAFÍAS · autoalojadas
+
+   Los mismos archivos que servía Google Fonts, descargados y puestos
+   en css/fuentes/. Se hace por tres razones, en este orden:
+
+   1. LEGAL. Pedir la fuente a fonts.gstatic.com envía la IP del
+      visitante a un tercero en cada visita. Autoalojando, la web no
+      hace ni una sola petición fuera del dominio propio: la página de
+      cookies puede decir la verdad más simple, que no hay ninguna.
+   2. VELOCIDAD. Se ahorran dos conexiones nuevas (DNS + TLS + la
+      hoja de estilos intermedia) antes de que empiece a bajar la
+      primera letra.
+   3. CONTROL. Google puede publicar una versión nueva de la fuente y
+      cambiar el dibujo de las letras. Aquí la versión queda fija.
+
+   Se conserva el «unicode-range» original: gracias a él el navegador
+   solo descarga el bloque «latin» (229 KB entre las tres familias).
+   El «latin-ext» está guardado por si algún día entra un texto que lo
+   necesite, pero con el castellano no llega a pedirse nunca.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Rangos de caracteres, tal cual los define Google. */
+/* latin:      U+0000-00FF … cubre todo el castellano (á é í ó ú ñ ü ¿ ¡) */
+/* latin-ext:  el resto del alfabeto latino europeo */
+
+/* ─── Archivo · titulares. Eje de anchura: es lo que permite el corte
+       ancho de los títulos, que imita el trazo del logotipo. ─────── */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 600;
+  font-stretch: 100% 125%;
+  font-display: swap;
+  src: url(fuentes/archivo-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 600;
+  font-stretch: 100% 125%;
+  font-display: swap;
+  src: url(fuentes/archivo-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ─── Newsreader · texto corrido. Sin cursiva: pesa 129 KB para una
+       frase, y esa frase se resuelve con la caja alta. ───────────── */
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(fuentes/newsreader-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 400 500;
+  font-display: swap;
+  src: url(fuentes/newsreader-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ─── DM Mono · solo dato duro: dirección, teléfono, año, materiales.
+       Si algo va en mono es porque contiene un dato comprobable. ─── */
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(fuentes/dmmono-300-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(fuentes/dmmono-300-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fuentes/dmmono-400-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fuentes/dmmono-400-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}

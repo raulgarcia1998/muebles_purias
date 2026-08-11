@@ -1,0 +1,17 @@
+# Los originales del cliente se versionan en el repositorio, pero no hacen
+# falta en el servidor: la web solo sirve los derivados de Recursos/optimizado/.
+# Son 17 MB que no tiene sentido subir en cada despliegue.
+#
+# Se listan uno a uno a propósito. Un patrón del tipo «Recursos/*» dejaría el
+# sitio sin una sola imagen si algún día se interpreta de otra forma.
+Recursos/ANTESyDESPUES.mp4
+Recursos/videococinadefinitivo.mp4
+Recursos/Haz_un_video_corto_de_una_coci.mp4
+Recursos/trabajo1_cocina.png
+Recursos/trabajo2_salon.png
+Recursos/trabajo3_vestidor.png
+Recursos/kam-idris-vqMQN9zImG4-unsplash.jpg
+Recursos/clay-banks-C-FqIffctHI-unsplash.jpg
+Recursos/logo.png
+
+README.md

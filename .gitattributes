@@ -1,0 +1,9 @@
+# Texto normalizado a LF en el repositorio, sea cual sea el sistema.
+* text=auto eol=lf
+
+# Binarios: que git no intente convertir nada ni calcular diffs.
+*.mp4  binary
+*.png  binary
+*.jpg  binary
+*.webp binary
+*.woff2 binary

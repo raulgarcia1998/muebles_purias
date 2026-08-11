@@ -1,0 +1,309 @@
+# Muebles Purias · web
+
+Sitio estático de una sola página, más tres páginas legales. Sin build, sin
+dependencias, sin framework: se sube tal cual a cualquier hosting.
+
+```
+index.html            aviso-legal.html    css/estilo.css     Recursos/            originales del cliente, intactos
+                      cookies.html        css/fuentes.css    Recursos/optimizado/ derivados para web
+                      privacidad.html     css/fuentes/       robots.txt · sitemap.xml
+                                          js/main.js         vercel.json · .vercelignore
+```
+
+---
+
+## Publicar
+
+Copia todo al servidor. Un único requisito real:
+
+> **El servidor debe responder a peticiones parciales (`Accept-Ranges: bytes`).**
+> Sin eso el navegador no puede saltar a un instante del vídeo y la sección
+> «Antes y después» no se puede recorrer con el scroll. Apache, nginx, Netlify,
+> Vercel, GitHub Pages y cualquier hosting compartido normal lo hacen de serie.
+> Si no lo hiciera, la web lo detecta sola y le devuelve al vídeo sus controles
+> de reproducción: no se rompe nada, solo se pierde el efecto.
+
+Para verlo en local no basta con abrir `index.html` haciendo doble clic: los
+vídeos necesitan un servidor. Desde esta carpeta:
+
+```
+npx serve .          # o:  python -m http.server 8000
+```
+
+### En Vercel
+
+No hay build: es un sitio estático. Al importar el repositorio, en *Framework
+Preset* hay que dejar **Other**, y el resto en blanco. `vercel.json` ya fija:
+
+- **Cabeceras de seguridad** en todo el sitio — `nosniff`, `Referrer-Policy`,
+  `X-Frame-Options` y una `Permissions-Policy` que apaga cámara, micrófono y
+  geolocalización, que esta web no usa.
+- **Caducidad de la caché por tipo de archivo.** Las tipografías, un año
+  (`immutable`: no cambian nunca). Las fotos y los vídeos, treinta días con
+  revalidación en segundo plano — el plazo está pensado para que, cuando el
+  cliente entregue sus fotos reales, no queden atascadas semanas en el
+  navegador de nadie. El CSS y el JS, una hora.
+
+`.vercelignore` deja fuera del despliegue los originales de `Recursos/` (17 MB
+que el sitio no sirve). Siguen versionados en el repositorio: se excluyen del
+servidor, no del archivo.
+
+> No se ha puesto **Content-Security-Policy**. Ahora que la web no llama a
+> ningún tercero, una CSP estricta sería trivial de escribir, pero el bloque
+> JSON-LD del final de `index.html` es un `<script>` en línea y el trato que le
+> dan los navegadores bajo `script-src` no es uniforme. Antes que arriesgar la
+> ficha de Google por una cabecera, se deja anotado: si se añade, hay que
+> comprobar el resultado en el *Rich Results Test*.
+
+---
+
+## Pendiente de que lo facilite el cliente
+
+Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
+
+| Qué falta | Dónde se pone |
+|---|---|
+| **C.I.F. y datos registrales** | `aviso-legal.html` y `privacidad.html`, donde pone «Pendiente de facilitar» |
+| **Revisión legal de los tres textos** | Los redacté describiendo el funcionamiento real de la web, pero debe validarlos un asesor. Cada página lleva un recuadro de aviso visible que hay que borrar al hacerlo. |
+| **URLs de Instagram, Facebook y Google** | `index.html`, pie de página. Ahora son `<span class="pie__pendiente">` sin enlace. Sustituir por `<a href="URL">`. Preferí dejarlos sin enlazar antes que publicar enlaces rotos. |
+| **URL de la tienda virtual** | Igual que las anteriores. |
+| **Horario comercial** | No se ha inventado ninguno. Cuando lo dé, va en la sección «Pásate por la tienda» y en el `openingHours` del JSON-LD del final de `index.html`, que es lo que lee Google para la ficha del negocio. |
+| **Foto de la tienda o del equipo** | Es la ausencia que más se nota: en una empresa que vende trato personal desde 1970, una cara y una fachada valen más que un render. Iría en «Pásate por la tienda». |
+| **Captura del software 3D** | El proyecto 3D es el mayor argumento de venta del negocio y es la única sección que no tiene ninguna imagen. |
+| **Nombre y localidad de cada obra** | La galería describe cada trabajo por tipología y materiales, que es lo único verificable ahora mismo. |
+| **Dominio definitivo** | Está puesto `https://www.mueblespurias.com/` en **cinco sitios**: la etiqueta canónica, `og:url`, `og:image`, el JSON-LD (todo en `index.html`), más `robots.txt` y `sitemap.xml`. Si el dominio es otro, hay que cambiarlo en los cinco. La URL de `og:image` **tiene que ser absoluta**: con una ruta relativa, el enlace se comparte por WhatsApp sin miniatura. |
+
+### Dos avisos sobre el material entregado
+
+1. **Los dos vídeos llevaban una marca de agua de IA** (la estrella de cuatro
+   puntas, abajo a la derecha). Se ha eliminado por interpolación en las copias
+   de `Recursos/optimizado/`. Los originales están intactos y sin tocar.
+2. **Nada de lo que hay en la galería es obra propia fotografiada.** Las dos
+   imágenes del salón y el vestidor y los dos vídeos son material generado; la
+   cocina es una **fotografía de Unsplash** (autor: Kam Idris). La licencia de
+   Unsplash permite el uso comercial sin atribución, así que legalmente no hay
+   problema, pero están bajo un titular que dice «Trabajos realizados» y eso es
+   una afirmación sobre obra propia. Antes de publicar conviene decidirlo:
+   sustituir por fotos reales de Purias, o cambiar el titular por algo como
+   «Ambientes» o «Nuestro estilo», que no afirma autoría.
+
+---
+
+## Qué se hizo con el material
+
+Los archivos de `Recursos/` **no se han modificado**. Todo lo derivado está en
+`Recursos/optimizado/` y puede regenerarse.
+
+Criterio: **la calidad manda sobre el peso.** Es material de escaparate de un
+negocio que vende acabados; un vídeo con artefactos de compresión desmiente
+justo lo que la página afirma. Todo se ha codificado en el tramo donde la
+pérdida deja de verse, y se ha medido para no decirlo de oídas.
+
+| Origen | Resultado | Peso | Fidelidad medida |
+|---|---|---|---|
+| `videococinadefinitivo.mp4` (2,4 MB) | `cocina-hero.mp4` — sin marca de agua, sin pista de audio, `faststart` | 2,7 MB | **SSIM 0,9956 · PSNR 46,6 dB** |
+| `ANTESyDESPUES.mp4` (2,6 MB) | `antes-despues.mp4` — sin marca, **codificado para recorrerse a mano** (ver abajo) | 10,9 MB *(no se descarga hasta acercarse a la sección)* | **SSIM 0,9939 · PSNR 44,6 dB** |
+| ídem | `antes-despues-480.mp4` — la misma pieza a 854×480 para pantallas estrechas | 5,4 MB | PSNR 42,1 dB |
+| `kam-idris-…-unsplash.jpg` (3400×3000) | `cocina-roble-ancha-*` (2,2:1) y `cocina-roble-alta-*` (3:2), en `.webp` + `.jpg` de reserva | 90 KB – 878 KB | **SSIM 0,995** |
+| `trabajo2/3.png` (4,7 MB) | `.webp` a 1408, 1000 y 640 px + `.jpg` de reserva | 380–480 KB cada uno | **SSIM 0,991–0,994** |
+| `logo.png` | `logo-600.png`, 754 px nativos | 49 KB | sin pérdida |
+
+Los vídeos van a **CRF 14 con preset `veryslow`**, por encima del bitrate del
+propio original (2.293 kbps frente a 2.050): no se ha tirado información, solo
+se ha vuelto a empaquetar. Un PSNR por encima de 40 dB se considera pérdida
+invisible; estamos en 45–47.
+
+> **El techo no es la compresión, es el material.** Los dos vídeos son
+> **1280×720**. En un monitor de 1440 px la web los muestra a ~1400 px, y en una
+> pantalla Retina el navegador los amplía al doble. Eso no lo arregla ningún
+> bitrate. Si se quiere nitidez real en pantalla grande, hace falta el original
+> en 1080p o 4K; con eso el mismo proceso da un salto visible. Las fotos tienen
+> el mismo techo: son de 1408 px de ancho y no se amplían.
+
+### La cocina de la galería lleva dos encuadres distintos
+
+`kam-idris-vqMQN9zImG4-unsplash.jpg` es **casi cuadrada** (3400×3000, ratio
+1,13) y la galería la muestra apaisada, así que hay que recortar. Se recorta
+dos veces, una por forma de pantalla, y `<picture>` elige:
+
+| | proporción | ventana | dónde |
+|---|---|---|---|
+| `cocina-roble-ancha-*` | **2,2:1** al 40 % de altura | conserva la lámpara completa con su riel, la vitrina, el olivo y la isla | monitores (> 900 px) |
+| `cocina-roble-alta-*` | **3:2** centrado | entran también los taburetes verdes | móvil (≤ 900 px) |
+
+En el encuadre ancho **se pierden los taburetes**: a 2,2:1 no caben la lámpara
+y ellos a la vez, y la lámpara es la pieza fuerte de esa cocina. En móvil no
+hace falta ese sacrificio porque manda el ancho, no el alto — y una tira de
+2,2:1 en un teléfono quedaría en un hilo de 155 px.
+
+> **El `aspect-ratio` del CSS y el recorte del archivo tienen que coincidir**,
+> y cambian en el mismo punto (900 px). Si se toca uno sin el otro, la foto
+> sale deformada.
+
+`trabajo1_cocina.png` sigue en `Recursos/` intacto, pero ya no se usa: sus
+derivados se han retirado de `optimizado/`.
+
+### El vídeo de la reforma se codifica distinto, y no es opcional
+
+Ese vídeo no se reproduce: se **recorre**. Cada píxel de scroll le pide al
+navegador un instante nuevo, así que lo que importa no es solo cómo se ve, sino
+**cuánto tarda en llegar a un punto cualquiera**. Con la codificación normal
+tardaba 27 ms por salto: por encima de los 16 ms de un fotograma de pantalla, y
+por eso se veía como un pase de fotos en vez de como movimiento.
+
+Los tres ajustes que lo arreglan, medidos uno a uno:
+
+| | peso | PSNR | latencia media |
+|---|---|---|---|
+| Codificación normal | 5,4 MB | 44,8 dB | **27,4 ms** ✗ |
+| Solo acortar keyframes (sin `fastdecode`) | 9,5 MB | 44,6 dB | 19,6 ms ✗ |
+| **Keyframes cada 3 + `-tune fastdecode` + `-bf 0` + `-refs 1`** | 10,9 MB | 44,6 dB | **9,4 ms** ✓ |
+| La misma receta a 480p (móvil) | 5,4 MB | 42,1 dB | **4,8 ms** ✓ |
+
+El factor decisivo resultó ser **`-tune fastdecode`**, no la cantidad de
+keyframes: acortarlos solos apenas mejoraba. La calidad de imagen se mantiene
+(44,6 frente a 44,8 dB: 0,2 dB, invisible). Lo que cuesta es peso, y ese peso
+solo se descarga cuando el lector se acerca a la sección.
+
+> Si alguna vez se reencoda este archivo, **hay que conservar `-tune fastdecode
+> -bf 0 -refs 1 -g 3`**. Sin eso vuelven los tirones aunque la imagen se vea
+> igual de bien.
+
+Comandos usados: `ffmpeg` para vídeo y pósteres, `sharp` para las imágenes.
+Si alguna vez se quiere fidelidad literal bit a bit en las fotos, basta cambiar
+`quality: 100` por `nearLossless: true` en el script: sube a ~1,1 MB por imagen
+para ganar 0,006 de SSIM, que es exactamente nada a ojo.
+
+### El logotipo sobre fondo oscuro
+
+`logo.png` no tiene transparencia: es tinta negra sobre un blanco opaco. Sobre
+el fondo oscuro se resuelve por CSS con `filter: invert(1) contrast(1.25)` y
+`mix-blend-mode: screen`, sin retocar ni redibujar el archivo del cliente. El
+contraste extra lleva el blanco invertido a negro puro; sin él quedaría un
+rectángulo fantasma alrededor del logotipo.
+
+---
+
+## La paleta
+
+Ningún color está elegido de una carta: los seis salen de medir los colores
+dominantes del vídeo y de las tres fotos. Se definen una sola vez, en `:root`.
+
+| Variable | Hex | De dónde sale |
+|---|---|---|
+| `--noche` | `#1A1815` | El negro cálido de los armarios del vestidor. Nunca `#000`. |
+| `--nogal` | `#2A2823` | El color dominante exacto del vídeo de la cocina (10 % de sus píxeles). |
+| `--veta` | `#EDEAE4` | La veta blanca del mármol. Texto principal. |
+| `--hormigon` | `#9C948A` | El suelo de hormigón. Texto secundario. |
+| `--oliva` | `#5E6440` | El terciopelo de las butacas del salón. |
+| `--roble` | `#8A6534` | El roble dorado de la cocina vieja del vídeo. Solo la barra de «antes». |
+
+**El primer plan llevaba un acento de latón** —por el grifo y las tiras LED de
+las fotos— y se cayó al mirar el vídeo: ahí la grifería es negra mate, la piedra
+es mármol negro con veta blanca y la luz es LED lineal neutra. No hay un solo
+dorado en la pieza que manda en la página. Poner latón habría sido decorar con
+el tópico de «interiorismo de lujo» algo que el material desmiente. El único
+color saturado que queda es el verde, que es el que de verdad se repite en todo
+el material: las butacas del salón y las plantas y el jardín que entran por la
+ventana en las cinco piezas.
+
+## Decisiones que conviene no deshacer sin querer
+
+- **El teléfono que rompe el filete inferior** no es un adorno: en el logotipo,
+  los guiones se abren para dejar sitio al número. La web repite ese gesto.
+- **`--marco` y `--cruce` están atados.** El marco está metido hacia dentro
+  precisamente para dejar hueco entre su línea y el borde de la pantalla: ese
+  hueco es lo único que impide que se corten las primeras letras de los
+  títulos al desbordar. Si se estrecha `--marco`, hay que estrechar `--cruce`
+  en la misma medida. Comprobado de 390 a 1920 px: el título cruza entre 18 y
+  38 px y nunca se sale de la pantalla.
+- **El logotipo y el menú no son dos cajas encima de la página: son las dos
+  esquinas superiores del marco.** Sus bordes exteriores *son* los filetes del
+  marco y los interiores los cierran con el mismo trazo de 1 px. Si se les
+  cambia la posición o se les pone un margen, dejan de encajar y vuelven a
+  parecer banners pegados. El fondo es traslúcido con desenfoque para que la
+  cocina siga viéndose por detrás.
+- **Todas las entradas del menú van en hueso, no en gris.** Detrás corre el
+  vídeo: un gris medio sobre fondo traslúcido no garantiza contraste si en ese
+  instante pasa un reflejo claro. Lo que marca la sección actual es el filete
+  de debajo, no el color. Medido sobre píxeles reales: 8,4:1.
+- **El vídeo de la reforma se ve entero, sin recortar.** La sección es una
+  rejilla de cuatro filas (título, vídeo, barra, pie) donde solo crece la del
+  vídeo, así que todo el hueco sobrante se lo queda la imagen. El vídeo llena
+  esa fila y es `object-fit: contain` quien encaja el fotograma dentro. **No
+  se puede sustituir por `max-height: 100%` sobre el propio vídeo**: en un
+  elemento reemplazado dentro de una rejilla ese porcentaje no limita nada y
+  el vídeo se sale por debajo, encima de la barra de ANTES/DESPUÉS.
+- **Los saltos del vídeo se encadenan, no se amontonan.** El guion mantiene un
+  único salto en vuelo: cuando termina, va directo al último instante que haya
+  dejado el scroll. Pedir instantes nuevos mientras el anterior se resuelve
+  encola trabajo que el navegador acaba descartando, y eso se percibe como
+  pasos en vez de movimiento.
+- **La pista de scroll mide 260vh y no más.** El vídeo tiene 240 fotogramas:
+  cuanto más larga sea la pista, más píxeles hay que desplazar para pasar de un
+  fotograma al siguiente, y más se parece a un pase de fotos.
+- **El título de esa sección va en una línea** (`br` oculto) porque así ocupa
+  menos alto que en dos, y ese alto se lo queda el vídeo.
+- **La voz técnica va toda en mayúsculas** (menú, `PURIAS · LORCA · MURCIA`,
+  pies de foto, etiquetas, pie de página). Es la misma caja alta del logotipo,
+  y mezclar mayúsculas y minúsculas en ese registro rompe la unidad.
+- **Solo los títulos de sección se salen del marco.** Es la regla de composición
+  de todo el sitio y viene del logotipo, donde el nombre atraviesa las dos
+  verticales del rectángulo. Si algo más empieza a desbordar, deja de significar
+  nada.
+- **El verde oliva aparece una sola vez**, en el bloque de contacto. Es el único
+  color saturado de la web y sale del terciopelo de las butacas de la foto del
+  salón. Repetirlo lo mata.
+- **La sección de servicios no lleva iconos** y no es un olvido.
+- **No hay cursivas.** La cursiva de Newsreader pesa 129 KB para una frase.
+
+## Rendimiento medido
+
+| | Escritorio | Móvil |
+|---|---|---|
+| **Hasta que la página se ve entera** (texto, marco, póster, tipografías) | **1.070 KB** | **908 KB** |
+| Vídeo del hero, que entra después en segundo plano | 2,7 MB | no se descarga |
+| Vídeo de la reforma | solo al acercarse | solo al acercarse |
+| Tipografías (desde el propio dominio) | 229 KB | 229 KB |
+
+El vídeo del hero **no bloquea nada**: la página se pinta con el fotograma fijo
+y el vídeo entra por encima cuando ha llegado (`faststart` hace que empiece a
+reproducirse sin esperar al archivo completo). Quien tenga conexión lenta ve una
+foto de la cocina, no una caja negra.
+
+En móvil no se descarga el vídeo del hero en ningún caso. Y con el ahorro de
+datos activado tampoco se descarga el de la reforma: se ve el póster y el vídeo
+queda con su botón de play.
+
+### Las tipografías van autoalojadas
+
+Estaban en Google Fonts y ahora están en `css/fuentes/`, servidas desde el
+propio dominio. **La web no hace ni una sola petición fuera de su dominio**, y
+eso es antes que nada un asunto legal: pedir la fuente a `fonts.gstatic.com`
+manda la IP del visitante a un tercero en cada visita. Ahora la página de
+cookies puede decir la verdad más simple, que no sale nada.
+
+De paso se ahorran dos conexiones nuevas —DNS, TLS y una hoja de estilos
+intermedia— antes de que empiece a bajar la primera letra, y la versión del
+dibujo de las letras queda congelada: Google publica revisiones y esta web ya
+no se entera.
+
+Se conserva el `unicode-range` original de cada archivo, así que el navegador
+solo descarga el bloque **latin** (229 KB entre las tres familias). El
+`latin-ext` está guardado por si algún día entra un texto que lo necesite; con
+el castellano no llega a pedirse nunca, porque `á é í ó ú ñ ü ¿ ¡` están todas
+dentro de latin. Las dos que se ven sin hacer scroll —el titular y el primer
+párrafo— van además en `<link rel="preload">`.
+
+**La palanca que queda**: recortar los archivos a los caracteres que de verdad
+se usan (*subsetting* con `fonttools`). Bajaría esos 229 KB a la mitad larga,
+pero obliga a rehacer el recorte cada vez que cambie un texto.
+
+## Accesibilidad
+
+Verificado con navegador real, no a ojo: todo el texto pasa el contraste AA
+(la combinación más justa va a 4,55:1), los 18 elementos enfocables tienen
+indicador de foco visible, hay enlace para saltar al contenido, y con
+`prefers-reduced-motion` no se mueve absolutamente nada —el marco aparece ya
+dibujado, el vídeo del hero ni se descarga y la reforma pasa a tener controles
+normales.
