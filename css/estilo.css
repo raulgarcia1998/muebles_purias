@@ -416,6 +416,57 @@
   .enlace-bajada:hover::after { transform: translateY(3px); }
 
 
+  /* ─── PROYECTO 3D · fondo fotográfico ─────────────────────────────
+     Mismo patrón que el hero: capa de imagen a sangre + velo degradado
+     para que el texto siga cumpliendo el contraste AA encima de una
+     foto, no de un color plano. */
+  .seccion--proyecto {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .proyecto__medio {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: url('../Recursos/optimizado/proyecto-3d-900.webp');
+    background-size: cover;
+    background-position: 78% center;
+    background-repeat: no-repeat;
+  }
+  @media (min-width: 700px) {
+    .proyecto__medio { background-image: url('../Recursos/optimizado/proyecto-3d-1400.webp'); }
+  }
+  @media (min-width: 1300px) {
+    .proyecto__medio { background-image: url('../Recursos/optimizado/proyecto-3d-2400.webp'); }
+  }
+  .proyecto__velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to right,
+        var(--noche) 0%,
+        color-mix(in oklab, var(--noche) 92%, transparent) 50%,
+        color-mix(in oklab, var(--noche) 78%, transparent) 78%,
+        color-mix(in oklab, var(--noche) 40%, transparent) 100%);
+  }
+
+  /* El texto ocupa el ancho completo en pantallas estrechas, así que el
+     degrado horizontal —pensado para dejar ver la foto a la derecha del
+     texto en escritorio— también cae debajo de las últimas palabras de
+     cada línea. Ahí el velo se vuelve casi opaco de arriba abajo. */
+  @media (max-width: 700px) {
+    .proyecto__velo {
+      background:
+        linear-gradient(to bottom,
+          color-mix(in oklab, var(--noche) 70%, transparent) 0%,
+          var(--noche) 38%,
+          var(--noche) 100%);
+    }
+  }
+
+
   /* ─── RELATO ───────────────────────────────────────────────────── */
 
   .relato__destacado {

@@ -86,6 +86,13 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
    una afirmación sobre obra propia. Antes de publicar conviene decidirlo:
    sustituir por fotos reales de Purias, o cambiar el titular por algo como
    «Ambientes» o «Nuestro estilo», que no afirma autoría.
+3. **`gafas3d.jpg` (fondo de «Proyecto 3D») también es generada por IA.**
+   Sus metadatos C2PA lo confirman: `claim_generator_info: Google C2PA Core
+   Generator Library`, `digitalSourceType: trainedAlgorithmicMedia`, marca
+   `SynthID` aplicada. A diferencia de la galería, esta sección **no afirma
+   ser un trabajo de Purias** — ilustra el servicio de proyecto 3D en
+   abstracto, así que el problema de autoría no se plantea aquí. Queda
+   anotado por el mismo criterio de transparencia que los demás archivos.
 
 ---
 
@@ -107,6 +114,7 @@ pérdida deja de verse, y se ha medido para no decirlo de oídas.
 | `kam-idris-…-unsplash.jpg` (3400×3000) | `cocina-roble-ancha-*` (2,2:1) y `cocina-roble-alta-*` (3:2), en `.webp` + `.jpg` de reserva | 90 KB – 878 KB | **SSIM 0,995** |
 | `trabajo2/3.png` (4,7 MB) | `.webp` a 1408, 1000 y 640 px + `.jpg` de reserva | 380–480 KB cada uno | **SSIM 0,991–0,994** |
 | `logo.png` | `logo-600.png`, 754 px nativos | 49 KB | sin pérdida |
+| `gafas3d.jpg` (6336×2688) | `proyecto-3d-{900,1400,2400}.webp` — fondo de la sección «Proyecto 3D» | 50–229 KB | q92 |
 
 Los vídeos van a **CRF 14 con preset `veryslow`**, por encima del bitrate del
 propio original (2.293 kbps frente a 2.050): no se ha tirado información, solo
@@ -251,6 +259,15 @@ ventana en las cinco piezas.
   de todo el sitio y viene del logotipo, donde el nombre atraviesa las dos
   verticales del rectángulo. Si algo más empieza a desbordar, deja de significar
   nada.
+- **El velo de «Proyecto 3D» tiene una versión aparte para pantallas
+  estrechas** (`max-width: 700px`), y no es redundante: en escritorio el
+  texto vive en la mitad izquierda y el degradado horizontal deja ver la
+  foto a la derecha; en móvil el texto ocupa el ancho completo y ese mismo
+  degradado dejaría la cola de cada línea sobre la zona clara de la foto,
+  por debajo de AA. Medido con el texto oculto para muestrear el fondo real
+  (si se mide con el texto visible, un trazo de letra blanco puede leerse
+  como si fuera el fondo): mínimo 4,98:1 en escritorio, 5,36:1 en pantalla
+  ancha, 5,43:1 en móvil.
 - **El verde oliva aparece una sola vez**, en el bloque de contacto. Es el único
   color saturado de la web y sale del terciopelo de las butacas de la foto del
   salón. Repetirlo lo mata.
