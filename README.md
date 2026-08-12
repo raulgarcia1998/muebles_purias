@@ -223,6 +223,19 @@ ventana en las cinco piezas.
 
 ## Decisiones que conviene no deshacer sin querer
 
+- **El `clip-path` del revelado al desplazar (`.reveal`) va en los HIJOS del
+  elemento, nunca en el elemento observado.** Es la trampa más fácil de caer
+  al tocar esto: si `.reveal { clip-path: inset(0 0 100% 0) }` se pone
+  directamente sobre el elemento que vigila el `IntersectionObserver`, Chrome
+  calcula la intersección sobre la geometría ya clipada —una caja de 0 px de
+  alto— y el observador nunca lo ve entrar en pantalla. Nunca se dispara,
+  nunca se revela. Medido de forma aislada: mismo observador, mismo elemento,
+  `intersectionRatio` pasa de 0 a 0,87 solo con quitarle el `clip-path` al
+  propio objetivo. La regla real es `.reveal > * { clip-path: ... }`, y se
+  observa el padre —su caja nunca se clipa, así que el disparador no depende
+  de lo que dispara—. Por eso las filas de `.fichas` llevan el texto envuelto
+  en `<span class="fichas__texto">` en vez de ir suelto: sin un elemento que
+  envuelva cada parte, `.reveal > *` no tiene qué clipar.
 - **El teléfono que rompe el filete inferior** no es un adorno: en el logotipo,
   los guiones se abren para dejar sitio al número. La web repite ese gesto.
 - **`--marco` y `--cruce` están atados.** El marco está metido hacia dentro

@@ -332,6 +332,47 @@
 
   .titulo--rompe { transform: translateX(0); }
 
+
+  /* ─── REVELADO AL DESPLAZAR ──────────────────────────────────────
+     Mismo mecanismo que el título de arriba —IntersectionObserver,
+     se dispara una vez y se olvida—, pero con un lenguaje de
+     movimiento distinto: una cortina que se abre, no el fundido con
+     desplazamiento hacia arriba que lleva cualquier plantilla.
+     Reutiliza --curva, la misma curva del marco, los títulos, el
+     menú y los botones: ni una segunda curva de easing en la web.
+
+     El clip-path va en los HIJOS de .reveal, nunca en .reveal mismo.
+     Chrome calcula la intersección de un elemento sobre su propia
+     geometría clipada: si el propio observado tuviera
+     «clip-path: inset(0 0 100% 0)», su caja pasa a medir 0 de alto y
+     el IntersectionObserver nunca lo ve entrar en pantalla —medido:
+     mismo observador, mismo elemento, ratio 0 con el clip puesto y
+     0,87 al quitarlo—. Observando el padre (siempre con su tamaño
+     real) y clipando los hijos, el disparador nunca depende de lo
+     que dispara. */
+  .reveal > * {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.6s var(--curva);
+  }
+  .reveal.es-visible > * { clip-path: inset(0 0 0 0); }
+
+  /* El escalonado es cosmético, no el disparador: cada pieza se revela
+     por su cuenta al cruzar el umbral —así funciona igual de bien
+     apilada en una columna de móvil que en una fila de escritorio—, y
+     este retraso solo evita que dos salten a la vez si coinciden en
+     el mismo fotograma. */
+  .galeria .trabajo.reveal:nth-of-type(2) > * { transition-delay: 60ms; }
+  .galeria .trabajo.reveal:nth-of-type(3) > * { transition-delay: 120ms; }
+
+  .fichas li.reveal:nth-child(2) > * { transition-delay: 60ms; }
+  .fichas li.reveal:nth-child(3) > * { transition-delay: 120ms; }
+
+  .servicios .servicio.reveal:nth-child(2) > * { transition-delay: 60ms; }
+  .servicios .servicio.reveal:nth-child(3) > * { transition-delay: 120ms; }
+  .servicios .servicio.reveal:nth-child(4) > * { transition-delay: 180ms; }
+  .servicios .servicio.reveal:nth-child(5) > * { transition-delay: 240ms; }
+  .servicios .servicio.reveal:nth-child(6) > * { transition-delay: 300ms; }
+
   .dato {
     font-family: var(--tecnica);
     font-size: var(--t-dato);
@@ -1023,6 +1064,7 @@
 
     .marco__linea { transform: none !important; }
     .titulo { transform: none !important; }
+    .reveal > * { clip-path: none !important; }
 
     /* El vídeo de la reforma deja de depender del scroll y pasa a tener
        controles propios; la sección se queda quieta. */

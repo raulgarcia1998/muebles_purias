@@ -1,14 +1,16 @@
 /* ═══════════════════════════════════════════════════════════════════════
    MUEBLES PURIAS · Comportamiento
    ───────────────────────────────────────────────────────────────────────
-   Solo hay tres movimientos en toda la web, y ninguno es decorativo:
+   Solo hay cuatro movimientos en toda la web, y ninguno es decorativo:
 
      1. El marco se dibuja una vez al cargar. Nunca vuelve a moverse.
      2. Cada título sale del marco al entrar en pantalla. Una vez.
      3. La reforma avanza con el scroll. Eso no es una animación: es el
         usuario moviendo el tiempo del vídeo con el dedo.
+     4. Las fotos, fichas y tarjetas se revelan al llegar a ellas, una
+        cortina que se abre, no un fundido genérico. Una vez cada una.
 
-   Si el sistema pide movimiento reducido, no ocurre ninguno de los tres.
+   Si el sistema pide movimiento reducido, no ocurre ninguno de los cuatro.
    Sin dependencias.
    ═══════════════════════════════════════════════════════════════════════ */
 
@@ -50,6 +52,30 @@
     }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
 
     Array.prototype.forEach.call(titulos, function (t) { vigia.observe(t); });
+  }
+
+
+  /* ── 2b · Las piezas se revelan al llegar ─────────────────────────
+     Misma geometría que el título de arriba, misma disciplina: se
+     dispara una vez y se olvida del elemento. Lo que cambia es la
+     clase que añade —.es-visible mueve un clip-path, no un
+     translateX— así que va en su propio observador en vez de forzar
+     al de los títulos a hacer dos cosas distintas. */
+
+  var revelados = document.querySelectorAll('.reveal');
+
+  if (quieto.matches || !('IntersectionObserver' in window)) {
+    Array.prototype.forEach.call(revelados, function (r) { r.classList.add('es-visible'); });
+  } else {
+    var vigiaRevelado = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('es-visible');
+        vigiaRevelado.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
+
+    Array.prototype.forEach.call(revelados, function (r) { vigiaRevelado.observe(r); });
   }
 
 
