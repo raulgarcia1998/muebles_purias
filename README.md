@@ -237,16 +237,20 @@ ventana en las cinco piezas.
   en `<span class="fichas__texto">` en vez de ir suelto: sin un elemento que
   envuelva cada parte, `.reveal > *` no tiene qué clipar.
 - **`.reveal--lateral` es la única excepción al lenguaje de cortina**, y a
-  propósito: la primera foto de «Trabajos realizados» entra deslizándose
-  desde la izquierda (`opacity` + `translateX`, sin `clip-path`) en vez de
-  bajo la cortina que usa el resto de `.reveal`. Mismo disparador
-  (`.reveal`/`.es-visible`, el mismo `IntersectionObserver`) y el mismo
-  `--curva`, pero declarado después de `.reveal > *` en la cascada para
-  poder anular su `clip-path` con la misma especificidad. La duración es
-  0,9 s, la misma que ya usa el título al cruzar el marco — no una tercera
-  cifra inventada. Se reserva a un solo elemento: si se generaliza a más
-  piezas, deja de leerse como acento y pasa a ser el gesto por defecto,
-  que es justo lo que la cortina evita.
+  propósito: las tres fotos de «Trabajos realizados» entran deslizándose
+  (`opacity` + `translateX`, sin `clip-path`) en vez de bajo la cortina que
+  usa el resto de `.reveal`. Mismo disparador (`.reveal`/`.es-visible`, el
+  mismo `IntersectionObserver`) y el mismo `--curva`, pero declarado después
+  de `.reveal > *` en la cascada para poder anular su `clip-path` con la
+  misma especificidad. La cocina —la primera— desliza desde la izquierda en
+  0,9 s, la misma duración que ya usa el título al cruzar el marco. El salón
+  y el vestidor entran uno hacia el otro —izquierda y derecha, en espejo,
+  vía `.reveal--lateral-derecha`, que solo cambia el signo del
+  `translateX`— y algo más despacio (1,2 s): es el segundo movimiento de la
+  galería, no el primero, y puede permitirse un recorrido más largo. Sigue
+  reservado a la galería: si se generaliza a más secciones, deja de leerse
+  como acento y pasa a ser el gesto por defecto, que es justo lo que la
+  cortina evita en el resto de la web.
 - **El objetivo del `.reveal` tiene que ser un elemento de bloque, no en
   línea.** Segunda trampa del mismo mecanismo, distinta de la anterior: si
   `.reveal > *` recorta un `<span>` o un `<em>` en línea cuyo texto envuelve a
@@ -287,6 +291,23 @@ ventana en las cinco piezas.
   se puede sustituir por `max-height: 100%` sobre el propio vídeo**: en un
   elemento reemplazado dentro de una rejilla ese porcentaje no limita nada y
   el vídeo se sale por debajo, encima de la barra de ANTES/DESPUÉS.
+- **El progreso mostrado persigue al del scroll con una pequeña inercia, no
+  salta directo a él.** Cada fotograma, `avanzar()` mueve `actual` un 16 % de
+  la distancia que le falta hasta el punto que marca el scroll en ese
+  instante; al soltar el gesto, el destino deja de moverse pero `actual`
+  sigue cerrando la diferencia unos ~35 fotogramas (≈0,6 s) más, así que el
+  vídeo desliza hasta pararse en vez de cortar en seco. El scroll sigue
+  siendo quien manda —el destino no cambia—, solo cambia cómo se llega hasta
+  él. `dibujar()` (la pintura sin inercia) queda solo para el primer
+  fotograma y los redimensionados.
+- **`loadedmetadata` y `canplay` van con `{ once: true }`, y no es un
+  descuido.** `canplay` vuelve a dispararse después de cada salto de
+  scrubbing —el navegador avisa cada vez que hay datos alrededor del nuevo
+  punto—, y sin `once` cada aviso llamaba a `dibujar()`, que pinta de golpe:
+  eso cortaba en seco la persecución con inercia de arriba a mitad de
+  camino, cada vez que un salto terminaba. Verificado con un arrastre
+  simulado: sin `once` el vídeo se quedaba clavado en el punto del scroll
+  al instante; con `once`, sigue deslizando ~150 ms más tras soltar.
 - **Los saltos del vídeo se encadenan, no se amontonan.** El guion mantiene un
   único salto en vuelo: cuando termina, va directo al último instante que haya
   dejado el scroll. Pedir instantes nuevos mientras el anterior se resuelve

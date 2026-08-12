@@ -6,7 +6,8 @@
      1. El marco se dibuja una vez al cargar. Nunca vuelve a moverse.
      2. Cada título sale del marco al entrar en pantalla. Una vez.
      3. La reforma avanza con el scroll. Eso no es una animación: es el
-        usuario moviendo el tiempo del vídeo con el dedo.
+        usuario moviendo el tiempo del vídeo con el dedo, con un pelín de
+        inercia al soltar para que no pare en seco.
      4. Las fotos, fichas y tarjetas se revelan al llegar a ellas, una
         cortina que se abre, no un fundido genérico. Una vez cada una.
 
@@ -114,10 +115,11 @@
   }
 
   function arrancarScrub() {
-    var pedido = false;
     var ultimo = -1;
     var objetivo = null;        // último instante que ha pedido el scroll
     var saltando = false;       // ¿hay un salto todavía resolviéndose?
+    var actual = 0;             // progreso mostrado, persiguiendo al del scroll
+    var animando = false;       // ¿sigue corriendo el lazo de persecución?
 
     reforma.controls = false;   // a partir de aquí manda el scroll
 
@@ -145,8 +147,13 @@
     // La duración se lee del elemento en cada pasada. Depender de un
     // evento aquí es frágil: si «loadedmetadata» ya ha saltado antes de
     // que lleguemos a escucharlo, el scrub se queda mudo para siempre.
-    reforma.addEventListener('loadedmetadata', dibujar);
-    reforma.addEventListener('canplay', comprobarSalto);
+    // Los dos van con «once»: son arranque, no seguimiento. «canplay» en
+    // concreto vuelve a saltar después de cada salto de scrubbing —es
+    // normal, el navegador avisa de que hay datos alrededor del nuevo
+    // punto—, y sin «once» cada uno de esos avisos llamaba a dibujar(),
+    // que pinta de golpe y cortaba en seco la persecución con inercia.
+    reforma.addEventListener('loadedmetadata', dibujar, { once: true });
+    reforma.addEventListener('canplay', comprobarSalto, { once: true });
 
     // Si el servidor no sirve peticiones parciales, el navegador no puede
     // saltar a un instante del vídeo y el scrub no funcionaría. Antes que
@@ -181,10 +188,7 @@
       return p < 0 ? 0 : p > 1 ? 1 : p;
     }
 
-    function dibujar() {
-      pedido = false;
-      var p = progreso();
-
+    function aplicar(p) {
       if (avance) { avance.style.width = (p * 100).toFixed(2) + '%'; }
       if (etAntes) { etAntes.style.opacity = (1 - p * 0.75).toFixed(3); }
       if (etDespues) { etDespues.style.opacity = (0.35 + p * 0.65).toFixed(3); }
@@ -195,6 +199,37 @@
       // Un pelín antes del final: el último fotograma a veces no existe.
       objetivo = p * (duracion - 0.05);
       saltar();
+    }
+
+    // Pinta de golpe, sin perseguir nada: para el primer fotograma y
+    // para los redimensionados, donde arrancar una persecución desde
+    // cero solo añadiría un salto de más.
+    function dibujar() {
+      actual = progreso();
+      aplicar(actual);
+    }
+
+    /* El progreso que se pinta no salta directo al punto que marca el
+       scroll: lo persigue con una pequeña inercia. Por eso, al soltar
+       el gesto —dedo o rueda—, sigue deslizando un instante hasta
+       alcanzarlo en vez de parar en seco. Lo que manda sigue siendo
+       el scroll, el destino no cambia; solo cambia cómo se llega. Con
+       0,16 por fotograma el alcance tarda ~35 fotogramas (≈0,6 s) en
+       cerrarse del todo: se nota como deslizamiento, no como retraso. */
+    function avanzar() {
+      var destino = progreso();
+      var diferencia = destino - actual;
+
+      if (Math.abs(diferencia) < 0.0006) {
+        actual = destino;
+        aplicar(actual);
+        animando = false;
+        return;
+      }
+
+      actual += diferencia * 0.16;
+      aplicar(actual);
+      requestAnimationFrame(avanzar);
     }
 
     /* Los saltos se encadenan, no se amontonan.
@@ -222,13 +257,13 @@
     }
 
     function pedir() {
-      if (pedido) return;
-      pedido = true;
-      requestAnimationFrame(dibujar);
+      if (animando) return;       // ya hay un lazo en marcha, la persigue igual
+      animando = true;
+      requestAnimationFrame(avanzar);
     }
 
     window.addEventListener('scroll', pedir, { passive: true });
-    window.addEventListener('resize', pedir);
+    window.addEventListener('resize', dibujar);
     dibujar();
   }
 

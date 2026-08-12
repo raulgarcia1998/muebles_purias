@@ -359,12 +359,12 @@
   /* Variante «lateral»: entra deslizándose desde un costado en vez de
      bajo una cortina. Mismo disparador (.reveal/.es-visible, el mismo
      IntersectionObserver), mismo --curva, pero un lenguaje de
-     movimiento reservado a un solo elemento —la foto que abre la
-     galería— para que destaque como primera pieza sin convertirse en
-     el gesto por defecto de toda la web. 0.9s en vez de 0.6s: es el
-     mismo tiempo que tarda el título en cruzar el marco, no uno nuevo
-     inventado para la ocasión. Se declara después de .reveal > * para
-     ganar la cascada con la misma especificidad y anular su clip-path. */
+     movimiento reservado a la galería —para que siga leyéndose como
+     acento y no se convierta en el gesto por defecto de toda la web.
+     0.9s en vez de 0.6s: es el mismo tiempo que tarda el título en
+     cruzar el marco, no uno nuevo inventado para la ocasión. Se
+     declara después de .reveal > * para ganar la cascada con la misma
+     especificidad y anular su clip-path. */
   .reveal--lateral > * {
     clip-path: none;
     opacity: 0;
@@ -374,6 +374,19 @@
   .reveal--lateral.es-visible > * {
     opacity: 1;
     transform: translateX(0);
+  }
+
+  /* El salón y el vestidor entran uno hacia el otro —el salón desde la
+     izquierda (hereda la dirección de arriba), el vestidor desde la
+     derecha, en espejo— y algo más despacio que la cocina: es el
+     segundo movimiento de la galería, no el primero, así que puede
+     permitirse un recorrido más largo sin sentirse impaciente. */
+  .reveal--lateral-derecha > * {
+    transform: translateX(clamp(1.5rem, 6vw, 3.5rem));
+  }
+  .galeria .trabajo.reveal--lateral:nth-of-type(2) > *,
+  .galeria .trabajo.reveal--lateral:nth-of-type(3) > * {
+    transition-duration: 1.2s;
   }
 
   /* El escalonado es cosmético, no el disparador: cada pieza se revela
