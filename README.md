@@ -93,6 +93,11 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
    ser un trabajo de Purias** — ilustra el servicio de proyecto 3D en
    abstracto, así que el problema de autoría no se plantea aquí. Queda
    anotado por el mismo criterio de transparencia que los demás archivos.
+4. **`cocinahistorica.jpg` (foto de apoyo en «Cincuenta y cinco años…»)
+   también lleva la misma firma C2PA de Google Generative AI.** Igual que
+   `gafas3d.jpg`, no ilustra un trabajo propio: es una cocina de época que
+   apoya visualmente el titular sobre 1970, con el pie «así eran las
+   cocinas de entonces» — que no afirma que sea una obra de Purias.
 
 ---
 
@@ -115,6 +120,7 @@ pérdida deja de verse, y se ha medido para no decirlo de oídas.
 | `trabajo2/3.png` (4,7 MB) | `.webp` a 1408, 1000 y 640 px + `.jpg` de reserva | 380–480 KB cada uno | **SSIM 0,991–0,994** |
 | `logo.png` | `logo-600.png`, 754 px nativos | 49 KB | sin pérdida |
 | `gafas3d.jpg` (6336×2688) | `proyecto-3d-{900,1400,2400}.webp` — fondo de la sección «Proyecto 3D» | 50–229 KB | q92 |
+| `cocinahistorica.jpg` (4800×3584) | `cocina-historica-{700,1140}.webp` + `.jpg` de reserva — foto de apoyo en «Historia» | 116–273 KB | q90–92 |
 
 Los vídeos van a **CRF 14 con preset `veryslow`**, por encima del bitrate del
 propio original (2.293 kbps frente a 2.050): no se ha tirado información, solo
@@ -324,3 +330,46 @@ indicador de foco visible, hay enlace para saltar al contenido, y con
 `prefers-reduced-motion` no se mueve absolutamente nada —el marco aparece ya
 dibujado, el vídeo del hero ni se descarga y la reforma pasa a tener controles
 normales.
+
+### Objetivos táctiles
+
+Medidos con navegador real en 390 px: el teléfono flotante, los enlaces del
+pie y los de «Visítanos» tenían entre **17 y 19 px** de alto real — la caja de
+toque era solo el alto de la línea de texto, muy por debajo del mínimo cómodo
+(44 px). Irónico en el caso del teléfono, que es el CTA que más se pulsa.
+
+Arreglado con la misma técnica en los tres sitios: `padding` vertical +
+`margin` negativo de igual medida. El texto no se mueve ni un píxel de su
+sitio —el `margin` negativo compensa exactamente lo que añade el
+`padding`— pero la caja que responde al toque crece hasta comerse el hueco
+en blanco de alrededor. Medido después: **46–48 px** en los tres casos.
+
+> Si se toca el espaciado de `.pie__columna li` o `.visita__datos`, hay que
+> revisar que el `margin` negativo del enlace no se coma más aire del que
+> hay disponible entre elementos, o dos cajas de toque contiguas se
+> solaparían.
+
+El menú de cabecera pasó de 25 a 33 px con el mismo truco, pero solo por
+arriba: por abajo mantiene el `padding-bottom` original porque de él cuelga
+el filete que marca la sección activa, y moverlo habría separado la línea
+del texto.
+
+### La foto de «Historia» rompe el bloque de texto
+
+`#historia` era el peor caso de lectura en móvil: 818 px seguidos de prosa
+sobre fondo negro, sin una sola pausa visual. Se resolvió con dos cambios,
+ninguno un componente nuevo:
+
+- Se inserta `cocinahistorica.jpg` a media lectura, dentro del mismo marco
+  recortado que ya usa la galería (`.trabajo__marco`) — la pieza no cambia,
+  solo el sitio donde vive.
+- Los dos párrafos finales, que eran prosa genérica sobre calidad y trato,
+  pasan a la lista `.fichas` que ya existía en «Proyecto 3D» — mismo
+  componente, reutilizado, no una tarjeta inventada para la ocasión.
+
+Servicios recibió un ajuste menor: cada fila gana relleno lateral y un tinte
+casi imperceptible (`color-mix` al 3 % sobre `--veta`) para leerse como
+tarjeta en vez de solo texto con una línea debajo. Es el mismo lenguaje
+traslúcido que ya usan las placas del menú, no un color nuevo. Medido: el
+texto secundario sigue en 5,56:1 sobre el fondo compuesto, por encima del
+4,5:1 exigido.

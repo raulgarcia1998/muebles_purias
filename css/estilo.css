@@ -236,7 +236,11 @@
      asegurado pase lo que pase por detrás. */
   .cabecera__nav a {
     position: relative;
-    padding-bottom: 0.3rem;
+    /* El margen negativo arriba compensa el relleno: crece la caja de
+       toque hacia el aire de la barra sin mover el texto ni el filete
+       de abajo, que sigue pegado a la letra igual que antes. */
+    margin-top: -0.5rem;
+    padding: 0.5rem 0 0.3rem;
     text-decoration: none;
     color: var(--veta);
     white-space: nowrap;
@@ -266,7 +270,10 @@
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    padding: 0 1rem;
+    /* Es el CTA que más se pulsa: el aire vertical crece la caja de toque
+       a un mínimo cómodo sin tocar el tamaño de letra. La franja sigue
+       centrada en el filete inferior, solo más alta. */
+    padding: 0.85rem 1.1rem;
     transform: translate(-50%, 50%);
     background: var(--noche);
     color: var(--veta);
@@ -486,6 +493,19 @@
 
   .relato p:not(.relato__destacado) { color: var(--hormigon); }
 
+  /* Rompe el bloque de texto de «historia» a media lectura: mismo marco
+     recortado que usa la galería (.trabajo__marco), pero encajado dentro
+     de la columna de texto en vez de a sangre. Es la misma pieza, no un
+     componente nuevo — solo cambia dónde vive. */
+  .historia__foto {
+    margin: clamp(2rem, 5vh, 3rem) 0;
+  }
+  .historia__foto .trabajo__marco img { aspect-ratio: 4 / 3; }
+  .historia__foto figcaption {
+    margin-top: 0.75rem;
+    font-style: normal;
+  }
+
   .fichas {
     margin-top: 2.6rem;
     border-top: 1px solid var(--filete);
@@ -649,7 +669,14 @@
     border-top: 1px solid var(--filete);
   }
 
-  .servicio { padding: clamp(1.6rem, 3vh, 2.4rem) 0; border-bottom: 1px solid var(--filete-tenue); }
+  /* Un tinte casi imperceptible por fila, el mismo lenguaje traslúcido
+     que ya usan las placas del menú: da peso de tarjeta sin añadir un
+     componente nuevo ni un color que no estuviera ya en la paleta. */
+  .servicio {
+    padding: clamp(1.6rem, 3vh, 2.4rem) clamp(1.1rem, 3vw, 1.5rem);
+    background: color-mix(in oklab, var(--veta) 3%, transparent);
+    border-bottom: 1px solid var(--filete-tenue);
+  }
 
   .servicio__nombre {
     font-family: var(--display);
@@ -711,7 +738,16 @@
 
   .visita__campo .dato { display: block; color: var(--veta); margin-bottom: 0.35rem; }
   .visita__campo address { font-style: normal; line-height: 1.55; }
-  .visita__campo a { text-decoration-thickness: 1px; text-underline-offset: 4px; overflow-wrap: anywhere; }
+  /* «inline-block» + relleno vertical + margen negativo que lo compensa:
+     la caja de toque crece, el texto no se mueve ni un píxel de su sitio. */
+  .visita__campo a {
+    display: inline-block;
+    margin: -0.6rem 0;
+    padding: 0.6rem 0;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+  }
 
   .visita__acciones {
     grid-column: 1;
@@ -850,7 +886,17 @@
   }
 
   .pie__columna li { margin-bottom: 0.55rem; line-height: 1.5; }
-  .pie__columna a { text-decoration-color: var(--filete); text-underline-offset: 4px; overflow-wrap: anywhere; }
+  /* Mismo truco que en «Visítanos»: el margen negativo compensa el
+     relleno, así el texto no se mueve pero la caja de toque real bebe
+     del hueco entre enlaces en vez de limitarse a la altura de la letra. */
+  .pie__columna a {
+    display: inline-block;
+    margin: -0.65rem 0;
+    padding: 0.65rem 0;
+    text-decoration-color: var(--filete);
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+  }
   .pie__columna a:hover { text-decoration-color: currentColor; }
   .pie__direccion, .pie__pendiente { color: var(--hormigon); }
 
