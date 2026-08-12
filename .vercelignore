@@ -16,4 +16,13 @@ Recursos/gafas3d.jpg
 Recursos/cocinahistorica.jpg
 Recursos/logo.png
 
+# Los originales de las fotos de «Espacios» (~90 MB en total): mismo
+# criterio, la web solo sirve Recursos/optimizado/espacio-*. Estas sí son
+# carpetas enteras en vez de archivos sueltos porque cada una es de un
+# único cliente/categoría, no una mezcla de cosas.
+Recursos/Cocinas/
+Recursos/Salones/
+Recursos/Dormitorio/
+Recursos/Baño/
+
 README.md

@@ -677,6 +677,230 @@
   }
 
 
+  /* ─── ESPACIOS · explora por categoría ────────────────────────────
+     Base: cuatro categorías apiladas, cada una con un carrusel nativo
+     (scroll-snap, cero JS). js/espacios.js añade la clase
+     .espacios--mejorado y reestructura esto en pestañas con
+     activación por scroll cuando GSAP carga y no hay
+     prefers-reduced-motion — el resto de estas reglas cubre esa
+     versión mejorada; sin ellas, lo de arriba ya es una galería
+     completa por sí sola. */
+
+  .espacios__lista {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3rem, 7vh, 5rem);
+  }
+
+  .espacios__nombre {
+    font-family: var(--display);
+    font-variation-settings: 'wdth' 112, 'wght' 500;
+    font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.4rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.1rem;
+  }
+
+  /* — El carrusel: funciona igual con o sin JS. El scroll horizontal
+       nativo cubre el «swipe táctil o scroll horizontal» del encargo;
+       las flechas son solo un atajo encima de eso. — */
+  .carrusel { position: relative; }
+
+  .carrusel__pista {
+    display: flex;
+    gap: clamp(0.75rem, 2vw, 1.25rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--filete) transparent;
+  }
+
+  /* .carrusel__foto es la unidad que Flip mueve entera entre el visor y
+     la tarjeta (ver js/espacios.js): la foto y su pie viven dentro del
+     mismo elemento a propósito, para que viajen juntos sin que la
+     lógica de reordenar el DOM tenga que tocar dos nodos distintos. */
+  .carrusel__foto {
+    flex: 0 0 auto;
+    width: clamp(15rem, 45vw, 22rem);
+    scroll-snap-align: start;
+  }
+  /* 3:2 en vez de un 4:3 a la fuerza: las fotos reales llegan en ~1,8:1
+     —muy panorámicas—, y 3:2 pide un recorte de solo el 17% del ancho
+     en el propio pipeline (ver optimizar.js), frente al 44% que habría
+     hecho falta para forzarlas a 4:3. El recorte es del archivo, no del
+     navegador: mismo criterio que la cocina de roble de «Trabajos». */
+  .carrusel__marco {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: var(--nogal);
+  }
+  .carrusel__marco img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .carrusel__pie {
+    margin-top: 0.6rem;
+    color: var(--hormigon);
+  }
+
+  .carrusel__controles {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+    margin-top: 0.85rem;
+  }
+
+  .carrusel__control {
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--filete);
+    background: transparent;
+    color: var(--veta);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.16s var(--curva), background-color 0.25s var(--curva), border-color 0.25s var(--curva);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .carrusel__control:hover {
+      background: color-mix(in oklab, var(--veta) 8%, transparent);
+      border-color: var(--veta);
+    }
+  }
+  .carrusel__control:active { transform: scale(0.94); }
+
+  /* — Mejorado con GSAP: pestañas + pin por scroll + Flip —
+       Sin esta clase (JS no cargó, o prefers-reduced-motion), nada de
+       lo de aquí abajo se aplica: la base de arriba sigue mandando. */
+
+  .espacios--mejorado .espacios__pista { height: 400vh; }
+
+  .espacios__fijo { padding: clamp(1.5rem, 4vh, 3rem) 0; }
+
+  .espacios__cabecera {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(0.85rem, 2vw, 1.5rem);
+    margin-bottom: clamp(1.25rem, 3vh, 2rem);
+  }
+
+  .espacios__tarjeta {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding: 1.1rem;
+    border: 1px solid var(--filete-tenue);
+    border-top-color: color-mix(in oklab, var(--veta) 22%, transparent);
+    text-decoration: none;
+    color: var(--veta);
+    background: linear-gradient(165deg,
+      color-mix(in oklab, var(--veta) 6%, transparent),
+      color-mix(in oklab, var(--veta) 1.5%, transparent));
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    transition: border-color 0.3s var(--curva), background-color 0.3s var(--curva);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .espacios__tarjeta:not(.espacios__tarjeta--activa):hover { border-color: var(--filete); }
+  }
+  .espacios__tarjeta--activa {
+    border-color: var(--oliva-luz);
+    background: color-mix(in oklab, var(--oliva) 14%, transparent);
+  }
+
+  /* Marco de 4:3 para cuando la miniatura no está aquí —vive en el
+     visor mientras esta categoría está activa—, para que la tarjeta no
+     cambie de tamaño al ir y venir: las cuatro miden lo mismo tanto si
+     enseñan una foto como si están vacías. */
+  .espacios__tarjeta-marco {
+    aspect-ratio: 4 / 3;
+    background: var(--nogal);
+    border: 1px solid var(--filete-tenue);
+    overflow: hidden;
+  }
+  /* En la tarjeta activa el hueco está vacío a propósito —su foto vive
+     abajo, en el visor—: un trazo distinto (más claro, sin fondo) deja
+     ver que es el estado activo, no una foto que falta por cargar. */
+  .espacios__tarjeta--activa .espacios__tarjeta-marco {
+    background: transparent;
+    border-color: color-mix(in oklab, var(--oliva-luz) 35%, transparent);
+  }
+  .espacios__tarjeta .carrusel__foto {
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: unset;
+  }
+  .espacios__tarjeta .carrusel__marco {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+  .espacios__tarjeta .carrusel__pie { display: none; }
+
+  .espacios__tarjeta-nombre {
+    font-family: var(--tecnica);
+    font-size: var(--t-dato);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .espacios__progreso {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+  }
+  .espacios__paso {
+    flex: 1;
+    height: 2px;
+    background: var(--filete-tenue);
+    position: relative;
+    overflow: hidden;
+  }
+  .espacios__paso::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--veta);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.5s var(--curva);
+  }
+  .espacios__paso--activo::after { transform: scaleX(1); }
+  .espacios__paso--hecho::after { transform: scaleX(1); opacity: 0.4; }
+
+  /* Solo una categoría a la vez ocupa el visor; el resto vuelve a la
+     tarjeta. La ampliación es literal: las fotos crecen frente a la
+     versión apilada de arriba. */
+  .espacios--mejorado .espacios__categoria {
+    background: color-mix(in oklab, var(--veta) 3%, transparent);
+    border: 1px solid var(--filete-tenue);
+    padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  }
+  .espacios--mejorado .espacios__categoria .carrusel__foto {
+    width: clamp(19rem, 58vw, 32rem);
+  }
+
+  .espacios__pista-texto { margin-top: 1.5rem; text-align: center; }
+
+  @media (max-width: 640px) {
+    .espacios__cabecera {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 0.85rem;
+    }
+    .espacios__tarjeta {
+      flex: 0 0 auto;
+      width: 62vw;
+      scroll-snap-align: start;
+    }
+  }
+
+
   /* ─── ANTES Y DESPUÉS ──────────────────────────────────────────────
      El scroll no anima nada: mueve el tiempo del vídeo. Es el usuario
      quien hace la obra.                                               */
@@ -1153,5 +1377,26 @@
     .reforma__pista { height: auto; }
     .reforma__fijo { position: static; height: auto; min-height: 0; }
     .reforma__visor { aspect-ratio: 16 / 9; flex: none; }
+
+    /* js/espacios.js ya comprueba prefers-reduced-motion antes de añadir
+       .espacios--mejorado, así que en condiciones normales esta clase
+       nunca llega a aplicarse aquí. Se cubre igualmente por si el
+       sistema cambia la preferencia después de que GSAP ya haya
+       montado la versión con pestañas: sin esto, el pin por scroll
+       (ScrollTrigger) seguiría empujando 400vh de alto de golpe. */
+    .espacios__pista { height: auto !important; }
+    .espacios__fijo { position: static !important; }
+  }
+
+  /* Las tarjetas de «Espacios» son la única superficie de cristal de
+     la web: con esta preferencia se vuelven casi sólidas y pierden el
+     desenfoque, en vez de quedar traslúcidas sobre un fondo que ya no
+     se distingue bien. */
+  @media (prefers-reduced-transparency: reduce) {
+    .espacios__tarjeta {
+      background: var(--nogal);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
   }
 }

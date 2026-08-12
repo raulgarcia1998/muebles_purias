@@ -70,6 +70,7 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
 | **Horario comercial** | No se ha inventado ninguno. Cuando lo dé, va en la sección «Pásate por la tienda» y en el `openingHours` del JSON-LD del final de `index.html`, que es lo que lee Google para la ficha del negocio. |
 | **Foto de la tienda o del equipo** | Es la ausencia que más se nota: en una empresa que vende trato personal desde 1970, una cara y una fachada valen más que un render. Iría en «Pásate por la tienda». |
 | **Captura del software 3D** | El proyecto 3D es el mayor argumento de venta del negocio y es la única sección que no tiene ninguna imagen. |
+| **Fotos reales de «Espacios» (opcional)** | Las doce fotos actuales son en su mayoría generadas por IA, más dos duplicadas de «Trabajos realizados» — ver «Espacios · explora por categoría» más abajo. Sustituir cualquiera de ellas por fotografía real de un trabajo de Purias es tan simple como cambiar el `src`/`srcset` de su `.carrusel__foto` en `index.html`. |
 | **Nombre y localidad de cada obra** | La galería describe cada trabajo por tipología y materiales, que es lo único verificable ahora mismo. |
 | **Dominio definitivo** | Está puesto `https://www.mueblespurias.com/` en **cinco sitios**: la etiqueta canónica, `og:url`, `og:image`, el JSON-LD (todo en `index.html`), más `robots.txt` y `sitemap.xml`. Si el dominio es otro, hay que cambiarlo en los cinco. La URL de `og:image` **tiene que ser absoluta**: con una ruta relativa, el enlace se comparte por WhatsApp sin miniatura. |
 
@@ -98,6 +99,11 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
    ilustra un trabajo propio: es una cocina de época que ambienta el titular
    sobre 1970, con el pie «así eran las cocinas de entonces» — que no afirma
    que sea una obra de Purias.
+5. **Diez de las doce fotos de «Espacios» también llevan la firma C2PA de
+   Google Generative AI**, y las otras dos son fotos que la web ya usa en
+   «Trabajos realizados» — ver el detalle completo en «Espacios · explora
+   por categoría» más abajo. Ninguna de las doce es un trabajo real de
+   Purias fotografiado para esta sección.
 
 ---
 
@@ -121,6 +127,7 @@ pérdida deja de verse, y se ha medido para no decirlo de oídas.
 | `logo.png` | `logo-600.png`, 754 px nativos | 49 KB | sin pérdida |
 | `gafas3d.jpg` (6336×2688) | `proyecto-3d-{900,1400,2400}.webp` — fondo de la sección «Proyecto 3D» | 50–229 KB | q92 |
 | `cocinahistorica.jpg` (4800×3584) | `historia-fondo-{900,1400,2400}.webp` — fondo a sangre de «Cincuenta y cinco años…» | 155–766 KB | q90 |
+| 10 fotos de «Espacios» (~5500×3072 cada una) | `espacio-{categoría}-{n}-{700,1050}.webp` + `.jpg` de reserva a 1050 — recorte centrado de 1,8:1 a 3:2 en el propio pipeline | 28–133 KB cada derivado | q88 |
 
 Los vídeos van a **CRF 14 con preset `veryslow`**, por encima del bitrate del
 propio original (2.293 kbps frente a 2.050): no se ha tirado información, solo
@@ -197,6 +204,71 @@ contraste extra lleva el blanco invertido a negro puro; sin él quedaría un
 rectángulo fantasma alrededor del logotipo.
 
 ---
+
+## Espacios · explora por categoría
+
+Sección nueva entre «Trabajos realizados» y «El antes y el después»:
+cuatro categorías (Cocinas, Salón, Dormitorio, Baño) navegables por
+pestañas, con una transición de elemento compartido entre la tarjeta y el
+visor ampliado, activadas tanto por scroll —Cocinas → Salón → Dormitorio →
+Baño, con la sección fijada mientras dura— como por click.
+
+### De dónde salen las doce fotos, y qué es cada una
+
+Al llegar el material se comprobó con el mismo escaneo C2PA que ya se
+aplica al resto del sitio, y salieron dos cosas que conviene tener
+anotadas:
+
+1. **Diez de las doce están generadas por IA** — la misma firma que
+   `gafas3d.jpg` y `cocinahistorica.jpg` (`Google Generative AI`, marca
+   `SynthID`): las dos de Cocinas (blanca y negra), las tres de Salón, tres
+   de las cuatro de Dormitorio, y las dos de Baño. Ninguna afirma ser un
+   trabajo real de Purias — es ambientación, exactamente el mismo criterio
+   ya aplicado al fondo de «Proyecto 3D».
+2. **Las otras dos no son fotos nuevas: son las mismas imágenes que ya usa
+   «Trabajos realizados».** La primera foto de Cocinas es
+   `kam-idris-…-unsplash.jpg` (la cocina de roble y lama negra, la única
+   fotografía real de toda la galería) — sirve los derivados que ya
+   existían en `Recursos/optimizado/cocina-roble-*`, no unos nuevos. La
+   segunda de Dormitorio es `trabajo3_vestidor.png` — un vestidor, no un
+   dormitorio, reutilizando `trabajo3_vestidor-*`. Se mantuvieron a
+   petición expresa después de señalar la duplicidad, así que la misma
+   foto de la cocina de roble aparece en dos sitios de la página, y
+   «Dormitorio» enseña un vestidor entre sus cuatro fotos.
+
+El recorte va en el pipeline (`optimizar.js` en el scratchpad, mismo
+patrón que el resto del sitio): las fuentes llegan en ~1,8:1 y la tarjeta
+del carrusel es 3:2, así que se recorta el 17 % del ancho, centrado, antes
+de escalar a 700 y 1050 px con `sharp`.
+
+### Mejora progresiva, no un componente que depende de JavaScript
+
+El HTML base —sin JavaScript— ya es una galería completa: las cuatro
+categorías apiladas, cada una ya abierta, con su propio carrusel de
+`scroll-snap` nativo que responde al dedo o a la rueda sin una sola línea
+de script. `js/espacios.js` reestructura esto en pestañas con pin por
+scroll **solo si** GSAP cargó entero y el sistema no pide
+`prefers-reduced-motion`; si cualquiera de las dos condiciones falla, la
+página se queda en esa base — no hay una versión a medio construir
+esperando a que JavaScript la termine.
+
+### GSAP, autoalojado — la única dependencia externa de toda la web
+
+El resto del sitio sigue en cero dependencias; esta sección es la única
+excepción, y a cambio se autoaloja en `js/vendor/` en vez de servirse
+desde un CDN, por el mismo criterio que las tipografías en
+`css/fuentes/`: cero peticiones a terceros.
+
+| Archivo | Para qué |
+|---|---|
+| `gsap.min.js` | El motor de animación |
+| `ScrollTrigger.min.js` | Fija la sección durante el scroll y decide qué categoría toca en cada tramo |
+| `Flip.min.js` | La transición de elemento compartido entre la tarjeta y el visor |
+| `CustomEase.min.js` | Deja usar `--curva` —la misma curva de easing de toda la web— también en GSAP, en vez de recurrir a una de sus curvas con nombre |
+
+GSAP 3.13 es gratuito para cualquier uso, incluido el comercial, desde que
+Webflow adquirió la librería en 2025; antes, `Flip` y `ScrollTrigger`
+formaban parte de los plugins de pago del «Club GreenSock».
 
 ## La paleta
 
@@ -346,6 +418,24 @@ ventana en las cinco piezas.
   salón. Repetirlo lo mata.
 - **La sección de servicios no lleva iconos** y no es un olvido.
 - **No hay cursivas.** La cursiva de Newsreader pesa 129 KB para una frase.
+- **En «Espacios», `scrollLeft` en un carrusel oculto no hace nada.**
+  `entPista.scrollLeft = 0` tiene que ir **después** de `panel.hidden =
+  false`, nunca antes: con el panel todavía oculto (`display: none` vía
+  `[hidden]`), el navegador no tiene ningún viewport de scroll sobre el
+  que aplicar la asignación y la descarta en silencio, sin error. El
+  síntoma no es sutil — la primera foto del carrusel queda casi fuera de
+  vista — pero la causa sí lo es.
+- **Reactivar `scroll-snap-type` justo después de mover contenido dentro
+  del carrusel puede hacer que Chrome reasiente el scroll en la segunda
+  foto en vez de en la primera**, incluso mucho después de que termine
+  cualquier animación relacionada — medido con capturas fotograma a
+  fotograma: pasaba entre 800 y 1000 ms después del click, sin relación
+  aparente con la duración de las animaciones en marcha. La causa exacta
+  no se pudo aislar del todo; el arreglo fue pragmático, no elegante:
+  desactivar `scroll-snap-type` mientras se reordena el DOM, y al
+  reactivarlo, vigilar con `requestAnimationFrame` durante medio segundo
+  y corregir `scrollLeft` en el acto si vuelve a moverse solo. A 60fps no
+  llega a verse.
 
 ## Rendimiento medido
 

@@ -56,6 +56,7 @@
   </a>
   <nav class="cabecera__nav" aria-label="Principal">
     <a href="#trabajos">Trabajos</a>
+    <a href="#espacios">Espacios</a>
     <a href="#reforma">Antes y después</a>
     <a href="#proyecto">Proyecto 3D</a>
     <a href="#servicios">Servicios</a>
@@ -167,6 +168,213 @@
           <span class="dato">malla de bronce · luz en cada balda</span>
         </figcaption>
       </figure>
+
+    </div>
+  </section>
+
+
+  <!-- ─── EXPLORA POR ESPACIO ──────────────────────────────────────
+       Base sin JavaScript: cuatro categorías apiladas, cada una ya
+       abierta con su propio carrusel (scroll-snap nativo, sin JS). Si
+       carga JavaScript —y GSAP, y no hay prefers-reduced-motion—,
+       js/espacios.js reestructura esto en pestañas con activación por
+       scroll y una transición de elemento compartido entre la tarjeta
+       y el visor. Si algo de eso falla, esta base se queda tal cual:
+       sigue siendo una galería completa y usable.
+       AVISO: la cocina de roble y el vestidor son las mismas fotos que
+       «Trabajos realizados»; el resto son generadas por IA (firma C2PA
+       de Google) — ninguna es un trabajo real de Purias. Ver README.
+       role="group" en vez de <ul>/<li>: js/espacios.js reubica la
+       primera foto de cada categoría dentro de un <a> al mejorar la
+       página, y un <li> fuera de <ul>/<ol> no es HTML válido. -->
+  <section class="seccion espacios" id="espacios" aria-labelledby="t-espacios">
+    <h2 class="titulo" id="t-espacios">Explora por <br>espacio</h2>
+
+    <div class="espacios__lista" id="espacios-lista">
+
+      <article class="espacios__categoria" data-categoria="cocinas" id="espacios-panel-cocinas">
+        <h3 class="espacios__nombre">Cocinas</h3>
+        <div class="carrusel">
+          <div class="carrusel__pista" role="group" aria-label="Fotos de cocinas">
+
+            <div class="carrusel__foto espacios__miniatura">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/cocina-roble-ancha-1100.webp">
+                  <img src="Recursos/optimizado/cocina-roble-ancha-2200.jpg" width="1100" height="500" loading="lazy" decoding="async"
+                       alt="Cocina contemporánea con frentes de roble claro y armarios altos de lama vertical negra, isla con lámpara lineal escultórica de perfil cobrizo y encimera de roble macizo.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">roble y lama negra · luz escultórica</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-cocina-blanca-700.webp 700w, Recursos/optimizado/espacio-cocina-blanca-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-cocina-blanca-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Cocina blanca con isla de mármol veteado en tonos dorados a modo de cascada, azulejo biselado en la pared, suelo de roble y lámparas de latón colgantes.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">blanco y mármol veteado · latón</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-cocina-negra-700.webp 700w, Recursos/optimizado/espacio-cocina-negra-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-cocina-negra-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Cocina en tonos negros con isla de mármol oscuro a modo de cascada, armarios superiores de cristal estriado, suelo de madera oscura y vistas a una ciudad al fondo.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">negro y mármol oscuro · cristal estriado</p>
+            </div>
+
+          </div>
+          <div class="carrusel__controles">
+            <button class="carrusel__control carrusel__control--prev" type="button" aria-label="Foto anterior de cocinas">‹</button>
+            <button class="carrusel__control carrusel__control--next" type="button" aria-label="Foto siguiente de cocinas">›</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="espacios__categoria" data-categoria="salon" id="espacios-panel-salon">
+        <h3 class="espacios__nombre">Salón</h3>
+        <div class="carrusel">
+          <div class="carrusel__pista" role="group" aria-label="Fotos de salón">
+
+            <div class="carrusel__foto espacios__miniatura">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-salon-1-700.webp 700w, Recursos/optimizado/espacio-salon-1-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-salon-1-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Salón con panel de nogal que integra televisor, armarios y estanterías iluminadas, suelo de parqué en espiga y sofá tapizado en primer plano.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">nogal integral · parqué en espiga</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-salon-2-700.webp 700w, Recursos/optimizado/espacio-salon-2-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-salon-2-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Salón en tonos oscuros con sofá curvo de terciopelo azul marino, dos butacas de piel marrón, mesas de centro redondas en mármol negro y latón, y ventanales con vistas a los rascacielos de la ciudad.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">terciopelo azul marino · vistas a la ciudad</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-salon-3-700.webp 700w, Recursos/optimizado/espacio-salon-3-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-salon-3-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Salón luminoso con sofá curvo color crudo, butacas de piel cognac, mesa de centro de travertino y ventanales de suelo a techo con vistas a un bosque de pinos al atardecer.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">travertino y piel cognac · vistas al bosque</p>
+            </div>
+
+          </div>
+          <div class="carrusel__controles">
+            <button class="carrusel__control carrusel__control--prev" type="button" aria-label="Foto anterior de salón">‹</button>
+            <button class="carrusel__control carrusel__control--next" type="button" aria-label="Foto siguiente de salón">›</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="espacios__categoria" data-categoria="dormitorio" id="espacios-panel-dormitorio">
+        <h3 class="espacios__nombre">Dormitorio</h3>
+        <div class="carrusel">
+          <div class="carrusel__pista" role="group" aria-label="Fotos de dormitorio">
+
+            <div class="carrusel__foto espacios__miniatura">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-dormitorio-1-700.webp 700w, Recursos/optimizado/espacio-dormitorio-1-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-dormitorio-1-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Dormitorio principal con cabecero de fibra tejida a dos aguas, cama de plataforma en madera, chimenea de gas empotrada y balcón acristalado con vistas a la ciudad al anochecer.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">cabecero de fibra tejida · chimenea de gas</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/trabajo3_vestidor-1000.webp">
+                  <img src="Recursos/optimizado/trabajo3_vestidor-1408.jpg" width="1000" height="545" loading="lazy" decoding="async"
+                       alt="Vestidor con armarios de puertas de malla metálica en bronce, tiras de luz cálida en cada balda, isla central con encimera de mármol, banco de piel y suelo de madera oscura.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">malla de bronce · luz en cada balda</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-dormitorio-3-700.webp 700w, Recursos/optimizado/espacio-dormitorio-3-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-dormitorio-3-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Dormitorio infantil con litera de madera clara, cajoneras en rosa y verde salvia, estantería con juguetes y una alfombra redonda de rayas.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">litera infantil · tonos pastel</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-dormitorio-4-700.webp 700w, Recursos/optimizado/espacio-dormitorio-4-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-dormitorio-4-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Dormitorio con un mural en acuarela de fondo, cama de nogal, sillón de piel reclinable y una pared de cristal que da a un jardín japonés de musgo y rocas.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">mural en acuarela · jardín japonés</p>
+            </div>
+
+          </div>
+          <div class="carrusel__controles">
+            <button class="carrusel__control carrusel__control--prev" type="button" aria-label="Foto anterior de dormitorio">‹</button>
+            <button class="carrusel__control carrusel__control--next" type="button" aria-label="Foto siguiente de dormitorio">›</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="espacios__categoria" data-categoria="bano" id="espacios-panel-bano">
+        <h3 class="espacios__nombre">Baño</h3>
+        <div class="carrusel">
+          <div class="carrusel__pista" role="group" aria-label="Fotos de baño">
+
+            <div class="carrusel__foto espacios__miniatura">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-bano-1-700.webp 700w, Recursos/optimizado/espacio-bano-1-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-bano-1-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Baño de mármol gris con doble lavabo de sobre encimera sobre mueble de nogal, chimenea de gas empotrada, ducha acristalada y bañera exenta.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">mármol gris · chimenea de gas</p>
+            </div>
+
+            <div class="carrusel__foto">
+              <div class="carrusel__marco">
+                <picture>
+                  <source type="image/webp" srcset="Recursos/optimizado/espacio-bano-2-700.webp 700w, Recursos/optimizado/espacio-bano-2-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
+                  <img src="Recursos/optimizado/espacio-bano-2-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
+                       alt="Baño con mueble de lavabo azul marino, espejo redondo retroiluminado, grifería negra y ducha con paredes de mosaico gris tras una mampara de cristal.">
+                </picture>
+              </div>
+              <p class="carrusel__pie dato">azul marino · mosaico gris</p>
+            </div>
+
+          </div>
+          <div class="carrusel__controles">
+            <button class="carrusel__control carrusel__control--prev" type="button" aria-label="Foto anterior de baño">‹</button>
+            <button class="carrusel__control carrusel__control--next" type="button" aria-label="Foto siguiente de baño">›</button>
+          </div>
+        </div>
+      </article>
 
     </div>
   </section>
@@ -406,6 +614,16 @@
 }
 </script>
 
+<!-- GSAP autoalojado (gsap.com, licencia estándar, sin coste): «Espacios»
+     es la única sección que lo necesita, para el pin por scroll y la
+     transición de elemento compartido entre tarjeta y visor. Nada más
+     en la web depende de esto — si fallara la carga, espacios.js se
+     queda en su base sin pestañas, el resto de la página no se entera. -->
+<script src="js/vendor/gsap.min.js" defer></script>
+<script src="js/vendor/ScrollTrigger.min.js" defer></script>
+<script src="js/vendor/Flip.min.js" defer></script>
+<script src="js/vendor/CustomEase.min.js" defer></script>
+<script src="js/espacios.js" defer></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
