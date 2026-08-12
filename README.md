@@ -291,6 +291,15 @@ ventana en las cinco piezas.
   se puede sustituir por `max-height: 100%` sobre el propio vídeo**: en un
   elemento reemplazado dentro de una rejilla ese porcentaje no limita nada y
   el vídeo se sale por debajo, encima de la barra de ANTES/DESPUÉS.
+- **El póster del hero en móvil no se queda del todo quieto.** El vídeo no se
+  descarga por debajo de 640 px (ver arriba), así que sin nada más el fondo
+  sería una foto congelada. Se le da un «Ken Burns» muy lento —26 s por medio
+  ciclo, `scale(1→1.09)` + `translate` mínimo, `alternate infinite`, solo
+  `transform`— en vez de dejarlo inmóvil o descargar el vídeo igualmente.
+  Vive dentro del propio `@media (max-width: 640px)`, así que en escritorio
+  ni se declara. Respeta `prefers-reduced-motion` con su propia regla, no
+  solo con el `animation-duration: 0.01ms` genérico: sin esa regla explícita
+  el fondo se quedaría en un fotograma intermedio en vez de en el de reposo.
 - **El progreso mostrado persigue al del scroll con una pequeña inercia, no
   salta directo a él.** Cada fotograma, `avanzar()` mueve `actual` un 16 % de
   la distancia que le falta hasta el punto que marca el scroll en ese

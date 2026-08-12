@@ -1106,6 +1106,20 @@
     .hero { padding-top: 10rem; }
     .hero__medio { inset: var(--marco) 0; }
 
+    /* El vídeo no se descarga en móvil —ver main.js, es peso que nadie
+       pidió—, así que el póster se queda quieto por defecto. Para que no
+       se lea como una foto congelada, se le da un «Ken Burns» muy lento:
+       un acercamiento sutil de scale+translate, solo transform, sin
+       redescargar ni repintar nada. Es el mismo truco que ya usan los
+       documentales cuando no hay más que fotos fijas que mostrar. */
+    .hero__medio::before {
+      animation: hero-respira 26s var(--curva) infinite alternate;
+    }
+    @keyframes hero-respira {
+      from { transform: scale(1)     translate(0, 0); }
+      to   { transform: scale(1.09) translate(-1.6%, -1.1%); }
+    }
+
     /* En vertical, un 16:9 nunca va a ser alto. Lo que sí se puede es
        darle todo el ancho disponible: el vídeo llega hasta las dos
        verticales del marco. Se redefine --desborde para que el título
@@ -1159,6 +1173,7 @@
     .titulo { transform: none !important; }
     .reveal > * { clip-path: none !important; }
     .reveal--lateral > * { opacity: 1 !important; transform: none !important; }
+    .hero__medio::before { animation: none !important; transform: none !important; }
 
     /* El vídeo de la reforma deja de depender del scroll y pasa a tener
        controles propios; la sección se queda quieta. */
