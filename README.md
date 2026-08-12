@@ -266,8 +266,6 @@ ventana en las cinco piezas.
   en cajas de bloque aunque el HTML no lo diga—. En «Historia» hizo falta
   forzarlo a mano: `.relato__destacado.reveal > *` y `.historia__resto.reveal
   > *` llevan `display: block` explícito.
-- **El teléfono que rompe el filete inferior** no es un adorno: en el logotipo,
-  los guiones se abren para dejar sitio al número. La web repite ese gesto.
 - **`--marco` y `--cruce` están atados.** El marco está metido hacia dentro
   precisamente para dejar hueco entre su línea y el borde de la pantalla: ese
   hueco es lo único que impide que se corten las primeras letras de los
