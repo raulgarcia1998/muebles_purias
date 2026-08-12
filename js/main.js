@@ -5,8 +5,8 @@
 
      1. El marco se dibuja una vez al cargar. Nunca vuelve a moverse.
      2. Cada título sale del marco al entrar en pantalla. Una vez.
-     3. El vídeo de la reforma se reproduce solo al acercarse, en bucle,
-        y se para si el lector se va a otra parte.
+     3. La reforma avanza con el scroll. Eso no es una animación: es el
+        usuario moviendo el tiempo del vídeo con el dedo.
 
    Si el sistema pide movimiento reducido, no ocurre ninguno de los tres.
    Sin dependencias.
@@ -67,48 +67,143 @@
   }
 
 
-  /* ── 4 · La reforma se reproduce sola al acercarse ──────────────────
-     Antes el scroll movía el tiempo del vídeo a mano; ahora es un vídeo
-     normal, en bucle, que arranca solo y se para si el lector se va a
-     otra parte. No hace falta desplazar la página para verlo entero. */
+  /* ── 4 · La reforma avanza con el scroll ────────────────────────── */
 
+  var pista = document.getElementById('reforma-pista');
   var reforma = document.getElementById('reforma-video');
+  var avance = document.getElementById('reforma-avance');
+  var etAntes = document.getElementById('etiqueta-antes');
+  var etDespues = document.getElementById('etiqueta-despues');
+  var instruccion = document.getElementById('reforma-instruccion');
 
-  if (reforma) {
+  if (reforma && pista) {
     if (quieto.matches || ahorraDatos()) {
-      // Se queda con el póster y sus controles nativos: nadie descarga
-      // 10,9 MB de golpe si prefiere no ver cosas moverse solas, o si va
-      // con el ahorro de datos activado.
+      // Sin scrub: el vídeo se queda con sus controles y no se descarga
+      // hasta que alguien le da al play.
+      reforma.controls = true;
+      if (instruccion) { instruccion.textContent = 'reproduce para ver la reforma'; }
     } else {
-      arrancarAutoplay();
+      arrancarScrub();
     }
   }
 
-  function arrancarAutoplay() {
-    var reproduciendo = false;
+  function arrancarScrub() {
+    var pedido = false;
+    var ultimo = -1;
+    var objetivo = null;        // último instante que ha pedido el scroll
+    var saltando = false;       // ¿hay un salto todavía resolviéndose?
 
-    function traerYReproducir() {
-      // En pantallas estrechas, la copia de 480p: a ese ancho no se
-      // distingue de la de 720p y pesa la mitad.
-      if (pantallaChica.matches && !reforma.dataset.movil) {
-        reforma.dataset.movil = '1';
+    reforma.controls = false;   // a partir de aquí manda el scroll
+
+    // No se pide hasta que el lector se acerca: dos pantallas de margen
+    // bastan para que llegue cargado. En pantallas estrechas se sirve la
+    // copia de 480p: a 368 px de ancho no se distingue de la de 720p, pesa
+    // la mitad y se recorre el doble de rápido.
+    function traerVideo() {
+      if (reforma.preload === 'auto') return;
+      if (pantallaChica.matches) {
         reforma.src = 'Recursos/optimizado/antes-despues-480.mp4';
       }
-      if (reforma.preload !== 'auto') { reforma.preload = 'auto'; reforma.load(); }
-      var intento = reforma.play();
-      if (intento && intento.catch) { intento.catch(function () { /* controles nativos de sobra */ }); }
-      reproduciendo = true;
+      reforma.preload = 'auto';
+      reforma.load();
+    }
+    if ('IntersectionObserver' in window) {
+      var cerca = new IntersectionObserver(function (entradas) {
+        if (entradas[0].isIntersecting) { traerVideo(); cerca.disconnect(); }
+      }, { rootMargin: '200% 0px' });
+      cerca.observe(pista);
+    } else {
+      traerVideo();
     }
 
-    if (!('IntersectionObserver' in window)) { traerYReproducir(); return; }
+    // La duración se lee del elemento en cada pasada. Depender de un
+    // evento aquí es frágil: si «loadedmetadata» ya ha saltado antes de
+    // que lleguemos a escucharlo, el scrub se queda mudo para siempre.
+    reforma.addEventListener('loadedmetadata', dibujar);
+    reforma.addEventListener('canplay', comprobarSalto);
 
-    var vigia = new IntersectionObserver(function (entradas) {
-      entradas.forEach(function (e) {
-        if (e.isIntersecting) { traerYReproducir(); }
-        else if (reproduciendo) { reforma.pause(); }
+    // Si el servidor no sirve peticiones parciales, el navegador no puede
+    // saltar a un instante del vídeo y el scrub no funcionaría. Antes que
+    // dejar un vídeo congelado, se le devuelven los controles.
+    function comprobarSalto() {
+      var puede = reforma.seekable.length > 0 && reforma.seekable.end(0) > 0.5;
+      if (!puede) {
+        reforma.controls = true;
+        if (instruccion) { instruccion.textContent = 'reproduce para ver la reforma'; }
+        return;
+      }
+      dibujar();
+    }
+
+    // Safari en iOS no permite buscar en un vídeo que nunca se ha
+    // reproducido. Un play/pause inmediato y silencioso lo desbloquea.
+    function desbloquear() {
+      var p = reforma.play();
+      if (p && p.then) { p.then(function () { reforma.pause(); }).catch(function () {}); }
+      else { reforma.pause(); }
+      window.removeEventListener('touchstart', desbloquear);
+      window.removeEventListener('pointerdown', desbloquear);
+    }
+    window.addEventListener('touchstart', desbloquear, { once: true, passive: true });
+    window.addEventListener('pointerdown', desbloquear, { once: true });
+
+    function progreso() {
+      var caja = pista.getBoundingClientRect();
+      var recorrido = caja.height - window.innerHeight;
+      if (recorrido <= 0) return 0;
+      var p = -caja.top / recorrido;
+      return p < 0 ? 0 : p > 1 ? 1 : p;
+    }
+
+    function dibujar() {
+      pedido = false;
+      var p = progreso();
+
+      if (avance) { avance.style.width = (p * 100).toFixed(2) + '%'; }
+      if (etAntes) { etAntes.style.opacity = (1 - p * 0.75).toFixed(3); }
+      if (etDespues) { etDespues.style.opacity = (0.35 + p * 0.65).toFixed(3); }
+
+      var duracion = reforma.duration;
+      if (!duracion || !isFinite(duracion) || reforma.readyState < 1) return;
+
+      // Un pelín antes del final: el último fotograma a veces no existe.
+      objetivo = p * (duracion - 0.05);
+      saltar();
+    }
+
+    /* Los saltos se encadenan, no se amontonan.
+       Pedir un instante nuevo mientras el anterior sigue resolviéndose
+       encola trabajo que el navegador acaba descartando, y eso es
+       justo lo que se percibe como pasos en vez de movimiento. Aquí solo
+       hay un salto en vuelo: cuando termina, se va directo al último
+       objetivo que haya dejado el scroll. */
+    function saltar() {
+      if (saltando || objetivo === null) return;
+      if (Math.abs(objetivo - ultimo) < 0.015) return;
+
+      ultimo = objetivo;
+      saltando = true;
+      reforma.pause();
+
+      try { reforma.currentTime = ultimo; }
+      catch (e) { saltando = false; reforma.controls = true; return; }
+
+      reforma.addEventListener('seeked', function alTerminar() {
+        reforma.removeEventListener('seeked', alTerminar);
+        saltando = false;
+        saltar();                       // ¿se ha movido mientras tanto?
       });
-    }, { threshold: 0.4 });
-    vigia.observe(reforma);
+    }
+
+    function pedir() {
+      if (pedido) return;
+      pedido = true;
+      requestAnimationFrame(dibujar);
+    }
+
+    window.addEventListener('scroll', pedir, { passive: true });
+    window.addEventListener('resize', pedir);
+    dibujar();
   }
 
 

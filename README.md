@@ -17,9 +17,11 @@ index.html            aviso-legal.html    css/estilo.css     Recursos/          
 Copia todo al servidor. Un único requisito real:
 
 > **El servidor debe responder a peticiones parciales (`Accept-Ranges: bytes`).**
-> Sin eso los vídeos no empiezan a reproducirse hasta descargarse enteros, y
-> el usuario no puede adelantar con la barra nativa. Apache, nginx, Netlify,
+> Sin eso el navegador no puede saltar a un instante del vídeo y la sección
+> «Antes y después» no se puede recorrer con el scroll. Apache, nginx, Netlify,
 > Vercel, GitHub Pages y cualquier hosting compartido normal lo hacen de serie.
+> Si no lo hiciera, la web lo detecta sola y le devuelve al vídeo sus controles
+> de reproducción: no se rompe nada, solo se pierde el efecto.
 
 Para verlo en local no basta con abrir `index.html` haciendo doble clic: los
 vídeos necesitan un servidor. Desde esta carpeta:
@@ -112,7 +114,7 @@ pérdida deja de verse, y se ha medido para no decirlo de oídas.
 | Origen | Resultado | Peso | Fidelidad medida |
 |---|---|---|---|
 | `videococinadefinitivo.mp4` (2,4 MB) | `cocina-hero.mp4` — sin marca de agua, sin pista de audio, `faststart` | 2,7 MB | **SSIM 0,9956 · PSNR 46,6 dB** |
-| `ANTESyDESPUES.mp4` (2,6 MB) | `antes-despues.mp4` — sin marca, se reproduce solo al acercarse (ver abajo) | 10,9 MB *(no se descarga hasta acercarse a la sección)* | **SSIM 0,9939 · PSNR 44,6 dB** |
+| `ANTESyDESPUES.mp4` (2,6 MB) | `antes-despues.mp4` — sin marca, **codificado para recorrerse a mano** (ver abajo) | 10,9 MB *(no se descarga hasta acercarse a la sección)* | **SSIM 0,9939 · PSNR 44,6 dB** |
 | ídem | `antes-despues-480.mp4` — la misma pieza a 854×480 para pantallas estrechas | 5,4 MB | PSNR 42,1 dB |
 | `kam-idris-…-unsplash.jpg` (3400×3000) | `cocina-roble-ancha-*` (2,2:1) y `cocina-roble-alta-*` (3:2), en `.webp` + `.jpg` de reserva | 90 KB – 878 KB | **SSIM 0,995** |
 | `trabajo2/3.png` (4,7 MB) | `.webp` a 1408, 1000 y 640 px + `.jpg` de reserva | 380–480 KB cada uno | **SSIM 0,991–0,994** |
@@ -155,24 +157,31 @@ hace falta ese sacrificio porque manda el ancho, no el alto — y una tira de
 `trabajo1_cocina.png` sigue en `Recursos/` intacto, pero ya no se usa: sus
 derivados se han retirado de `optimizado/`.
 
-### El vídeo de la reforma ya no se recorre con el scroll
+### El vídeo de la reforma se codifica distinto, y no es opcional
 
-La primera versión de esta sección movía el tiempo del vídeo con el scroll:
-subir o bajar la página avanzaba o retrocedía la obra, dentro de una pista de
-260vh. Se quitó porque obligaba a desplazar mucho para ver la transformación
-completa. Ahora es un **vídeo normal**: se reproduce solo en bucle al
-acercarse (`IntersectionObserver`, mismo umbral que otros elementos de la
-página) y se pausa si el lector se va a otra parte. Con las flechas nativas
-del `<video>` se puede pausar o adelantar en cualquier momento.
+Ese vídeo no se reproduce: se **recorre**. Cada píxel de scroll le pide al
+navegador un instante nuevo, así que lo que importa no es solo cómo se ve, sino
+**cuánto tarda en llegar a un punto cualquiera**. Con la codificación normal
+tardaba 27 ms por salto: por encima de los 16 ms de un fotograma de pantalla, y
+por eso se veía como un pase de fotos en vez de como movimiento.
 
-El archivo `antes-despues.mp4` **no se ha vuelto a codificar** para este
-cambio: sigue siendo el mismo, pensado en su día para saltos de scroll muy
-rápidos (`-tune fastdecode -bf 0 -refs 1 -g 3`, keyframes cada 3 fotogramas).
-Esa receta no perjudica en nada la reproducción normal —decodifica rápido,
-que es bueno también para un móvil modesto reproduciendo en bucle— así que no
-hacía falta tocarlo. Si algún día se sustituye el archivo, ya no es necesario
-mantener esos parámetros pensados para el scrub; basta con una codificación
-de calidad alta corriente.
+Los tres ajustes que lo arreglan, medidos uno a uno:
+
+| | peso | PSNR | latencia media |
+|---|---|---|---|
+| Codificación normal | 5,4 MB | 44,8 dB | **27,4 ms** ✗ |
+| Solo acortar keyframes (sin `fastdecode`) | 9,5 MB | 44,6 dB | 19,6 ms ✗ |
+| **Keyframes cada 3 + `-tune fastdecode` + `-bf 0` + `-refs 1`** | 10,9 MB | 44,6 dB | **9,4 ms** ✓ |
+| La misma receta a 480p (móvil) | 5,4 MB | 42,1 dB | **4,8 ms** ✓ |
+
+El factor decisivo resultó ser **`-tune fastdecode`**, no la cantidad de
+keyframes: acortarlos solos apenas mejoraba. La calidad de imagen se mantiene
+(44,6 frente a 44,8 dB: 0,2 dB, invisible). Lo que cuesta es peso, y ese peso
+solo se descarga cuando el lector se acerca a la sección.
+
+> Si alguna vez se reencoda este archivo, **hay que conservar `-tune fastdecode
+> -bf 0 -refs 1 -g 3`**. Sin eso vuelven los tirones aunque la imagen se vea
+> igual de bien.
 
 Comandos usados: `ffmpeg` para vídeo y pósteres, `sharp` para las imágenes.
 Si alguna vez se quiere fidelidad literal bit a bit en las fotos, basta cambiar
@@ -232,12 +241,23 @@ ventana en las cinco piezas.
   vídeo: un gris medio sobre fondo traslúcido no garantiza contraste si en ese
   instante pasa un reflejo claro. Lo que marca la sección actual es el filete
   de debajo, no el color. Medido sobre píxeles reales: 8,4:1.
-- **El vídeo de la reforma se reproduce solo, no con el scroll.** Vive en el
-  mismo marco recortado que la galería (`.trabajo__marco`), en bucle, y se
-  pausa con `IntersectionObserver` en cuanto sale de pantalla — no tiene
-  sentido que siga sonando (aunque va mudo) o gastando CPU fuera de vista.
-  Bajo `prefers-reduced-motion` o ahorro de datos, no se descarga ni se
-  reproduce solo: se queda el póster con los controles nativos.
+- **El vídeo de la reforma se ve entero, sin recortar.** La sección es una
+  rejilla de cuatro filas (título, vídeo, barra, pie) donde solo crece la del
+  vídeo, así que todo el hueco sobrante se lo queda la imagen. El vídeo llena
+  esa fila y es `object-fit: contain` quien encaja el fotograma dentro. **No
+  se puede sustituir por `max-height: 100%` sobre el propio vídeo**: en un
+  elemento reemplazado dentro de una rejilla ese porcentaje no limita nada y
+  el vídeo se sale por debajo, encima de la barra de ANTES/DESPUÉS.
+- **Los saltos del vídeo se encadenan, no se amontonan.** El guion mantiene un
+  único salto en vuelo: cuando termina, va directo al último instante que haya
+  dejado el scroll. Pedir instantes nuevos mientras el anterior se resuelve
+  encola trabajo que el navegador acaba descartando, y eso se percibe como
+  pasos en vez de movimiento.
+- **La pista de scroll mide 260vh y no más.** El vídeo tiene 240 fotogramas:
+  cuanto más larga sea la pista, más píxeles hay que desplazar para pasar de un
+  fotograma al siguiente, y más se parece a un pase de fotos.
+- **El título de esa sección va en una línea** (`br` oculto) porque así ocupa
+  menos alto que en dos, y ese alto se lo queda el vídeo.
 - **La voz técnica va toda en mayúsculas** (menú, `PURIAS · LORCA · MURCIA`,
   pies de foto, etiquetas, pie de página). Es la misma caja alta del logotipo,
   y mezclar mayúsculas y minúsculas en ese registro rompe la unidad.
