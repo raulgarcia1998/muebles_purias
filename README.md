@@ -236,6 +236,17 @@ ventana en las cinco piezas.
   de lo que dispara—. Por eso las filas de `.fichas` llevan el texto envuelto
   en `<span class="fichas__texto">` en vez de ir suelto: sin un elemento que
   envuelva cada parte, `.reveal > *` no tiene qué clipar.
+- **`.reveal--lateral` es la única excepción al lenguaje de cortina**, y a
+  propósito: la primera foto de «Trabajos realizados» entra deslizándose
+  desde la izquierda (`opacity` + `translateX`, sin `clip-path`) en vez de
+  bajo la cortina que usa el resto de `.reveal`. Mismo disparador
+  (`.reveal`/`.es-visible`, el mismo `IntersectionObserver`) y el mismo
+  `--curva`, pero declarado después de `.reveal > *` en la cascada para
+  poder anular su `clip-path` con la misma especificidad. La duración es
+  0,9 s, la misma que ya usa el título al cruzar el marco — no una tercera
+  cifra inventada. Se reserva a un solo elemento: si se generaliza a más
+  piezas, deja de leerse como acento y pasa a ser el gesto por defecto,
+  que es justo lo que la cortina evita.
 - **El objetivo del `.reveal` tiene que ser un elemento de bloque, no en
   línea.** Segunda trampa del mismo mecanismo, distinta de la anterior: si
   `.reveal > *` recorta un `<span>` o un `<em>` en línea cuyo texto envuelve a

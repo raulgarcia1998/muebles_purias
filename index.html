@@ -34,7 +34,7 @@
 <link rel="stylesheet" href="css/estilo.css">
 <!-- Sin JavaScript, .es-visible nunca llega: esto le devuelve a cada
      pieza su visibilidad normal en vez de dejarla oculta para siempre. -->
-<noscript><style>.reveal > * { clip-path: none !important; }</style></noscript>
+<noscript><style>.reveal > * { clip-path: none !important; } .reveal--lateral > * { opacity: 1 !important; transform: none !important; }</style></noscript>
 </head>
 
 <body>
@@ -109,7 +109,7 @@
 
     <div class="galeria">
 
-      <figure class="trabajo trabajo--principal reveal">
+      <figure class="trabajo trabajo--principal reveal reveal--lateral">
         <div class="trabajo__marco">
           <!-- Dos encuadres del mismo original: panorámico en monitor,
                más alto en móvil, donde una tira de 2,2:1 quedaría en un
