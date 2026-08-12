@@ -534,18 +534,78 @@
 
   .relato p:not(.relato__destacado) { color: var(--hormigon); }
 
-  /* Rompe el bloque de texto de «historia» a media lectura: mismo marco
-     recortado que usa la galería (.trabajo__marco), pero encajado dentro
-     de la columna de texto en vez de a sangre. Es la misma pieza, no un
-     componente nuevo — solo cambia dónde vive. */
-  .historia__foto {
-    margin: clamp(2rem, 5vh, 3rem) 0;
+
+  /* ─── 1970 · fondo fotográfico con efecto de época ────────────────
+     Misma capa doble que #proyecto (imagen a sangre + velo), más una
+     tercera capa de grano y un filtro de color sobre la propia foto:
+     el aspecto de fotografía antigua se consigue entero en CSS, sin
+     tocar el archivo original del cliente ni generar una copia
+     reprocesada. Reversible con solo quitar el filtro. */
+  .seccion--historia {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
   }
-  .historia__foto .trabajo__marco img { aspect-ratio: 4 / 3; }
-  .historia__foto figcaption {
-    margin-top: 0.75rem;
-    font-style: normal;
+  .historia__medio {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background-image: url('../Recursos/optimizado/historia-fondo-900.webp');
+    background-size: cover;
+    background-position: center 38%;
+    background-repeat: no-repeat;
+    filter: sepia(0.5) saturate(0.6) contrast(1.12) brightness(0.7);
   }
+  @media (min-width: 700px) {
+    .historia__medio { background-image: url('../Recursos/optimizado/historia-fondo-1400.webp'); }
+  }
+  @media (min-width: 1300px) {
+    .historia__medio { background-image: url('../Recursos/optimizado/historia-fondo-2400.webp'); }
+  }
+
+  /* Grano de película: ruido SVG en línea, sin petición de red ni
+     archivo aparte, mezclado por encima de la foto ya sepiada. */
+  .historia__grano {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    opacity: 0.16;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  .historia__velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(130% 95% at 50% 45%, transparent 30%, color-mix(in oklab, var(--noche) 60%, transparent) 100%),
+      linear-gradient(to top,
+        var(--noche) 0%,
+        color-mix(in oklab, var(--noche) 78%, transparent) 40%,
+        color-mix(in oklab, var(--noche) 35%, transparent) 100%);
+  }
+
+  /* El objetivo del clip-path debe ser un único fragmento: si es un
+     elemento en línea que envuelve a más de una línea de texto (como
+     estas dos frases), Chrome recorta el contenido que cae fuera del
+     primer fragmento incluso con «inset(0 0 0 0)». Todos los demás
+     usos de .reveal en la web recortan un elemento de bloque (o un
+     hijo de grid, que se comporta como tal) sin darse cuenta de esta
+     regla; aquí sí hace falta forzarla. */
+  .seccion--historia .relato__destacado.reveal > *,
+  .seccion--historia .historia__resto.reveal > * {
+    display: block;
+  }
+
+  .seccion--historia .relato__destacado.reveal + .historia__resto.reveal > * { transition-delay: 160ms; }
+
+  .historia__pie {
+    margin-top: clamp(2rem, 5vh, 3rem);
+    text-align: right;
+  }
+
 
   .fichas {
     margin-top: 2.6rem;

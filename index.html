@@ -89,30 +89,11 @@
   </section>
 
 
-  <!-- ─── 1970 ─────────────────────────────────────────────── -->
-  <section class="seccion seccion--relato" id="historia" aria-labelledby="t-historia">
-    <h2 class="titulo" id="t-historia">Cincuenta y cinco años <br>en el mismo sitio</h2>
+  <!-- ─── POR QUÉ ELEGIRNOS · tarjeta de presentación tras el hero ── -->
+  <section class="seccion seccion--relato" id="confianza" aria-labelledby="t-confianza">
+    <h2 class="titulo" id="t-confianza">Por qué <br>elegirnos</h2>
 
     <div class="relato">
-      <p class="relato__destacado"><em>Muebles Purias es una empresa familiar fundada en 1970.</em>
-        Te atendemos de forma personalizada y no dejamos de evolucionar para ofrecerte las
-        tendencias y los estilos más nuevos, esos que hacen que el diseño y el espacio encajen.</p>
-
-      <figure class="historia__foto reveal">
-        <div class="trabajo__marco">
-          <picture>
-            <source type="image/webp"
-              srcset="Recursos/optimizado/cocina-historica-700.webp 700w,
-                      Recursos/optimizado/cocina-historica-1140.webp 1140w"
-              sizes="(max-width: 640px) 100vw, 570px">
-            <img src="Recursos/optimizado/cocina-historica-1140.jpg"
-                 width="1140" height="855" loading="lazy" decoding="async"
-                 alt="Una cocina de los años setenta, con azulejo de flores en tonos ocre y marrón, muebles de formica oscura, una mesa redonda con mantel de hule floral y una ventana con reja de forja abierta a un balcón.">
-          </picture>
-        </div>
-        <figcaption class="dato">así eran las cocinas de entonces</figcaption>
-      </figure>
-
       <ul class="fichas">
         <li class="reveal"><span class="dato">productos de calidad</span> <span class="fichas__texto">ambiente cálido y acogedor, sin perder de vista unos precios ajustados</span></li>
         <li class="reveal"><span class="dato">asesoramiento sin compromiso</span> <span class="fichas__texto">te acompañamos siempre que lo necesites</span></li>
@@ -294,6 +275,32 @@
           confirmar el pedido.</p>
       </li>
     </ul>
+  </section>
+
+
+  <!-- ─── 1970 · fondo fotográfico con efecto de época ─────────────
+       Mismo patrón de capas que el hero y #proyecto: foto a sangre +
+       velo degradado para el contraste del texto. Se añade una tercera
+       capa (grano) y un filtro de color sobre la propia foto para el
+       aspecto de fotografía antigua — todo en CSS, sin tocar el
+       archivo original del cliente. Justo antes de «Pásate por la
+       tienda»: es el remate emocional que empuja a la llamada. -->
+  <section class="seccion seccion--relato seccion--historia" id="historia" aria-labelledby="t-historia">
+    <div class="historia__medio" role="img"
+         aria-label="Una cocina de los años setenta, con azulejo de flores en tonos ocre y marrón, muebles de formica oscura, una mesa redonda con mantel de hule floral y una ventana con reja de forja abierta a un balcón."></div>
+    <span class="historia__grano" aria-hidden="true"></span>
+    <span class="historia__velo" aria-hidden="true"></span>
+
+    <h2 class="titulo" id="t-historia">Cincuenta y cinco años <br>en el mismo sitio</h2>
+
+    <div class="relato">
+      <p class="relato__destacado reveal"><em>Muebles Purias es una empresa familiar fundada en 1970.</em></p>
+      <p class="historia__resto reveal"><span>Te atendemos de forma personalizada y no dejamos de evolucionar
+        para ofrecerte las tendencias y los estilos más nuevos, esos que hacen que el diseño y el
+        espacio encajen.</span></p>
+    </div>
+
+    <p class="dato historia__pie">así eran las cocinas de entonces</p>
   </section>
 
 

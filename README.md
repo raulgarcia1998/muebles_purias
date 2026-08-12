@@ -93,11 +93,11 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
    ser un trabajo de Purias** — ilustra el servicio de proyecto 3D en
    abstracto, así que el problema de autoría no se plantea aquí. Queda
    anotado por el mismo criterio de transparencia que los demás archivos.
-4. **`cocinahistorica.jpg` (foto de apoyo en «Cincuenta y cinco años…»)
-   también lleva la misma firma C2PA de Google Generative AI.** Igual que
-   `gafas3d.jpg`, no ilustra un trabajo propio: es una cocina de época que
-   apoya visualmente el titular sobre 1970, con el pie «así eran las
-   cocinas de entonces» — que no afirma que sea una obra de Purias.
+4. **`cocinahistorica.jpg` (fondo de «Cincuenta y cinco años…») también lleva
+   la misma firma C2PA de Google Generative AI.** Igual que `gafas3d.jpg`, no
+   ilustra un trabajo propio: es una cocina de época que ambienta el titular
+   sobre 1970, con el pie «así eran las cocinas de entonces» — que no afirma
+   que sea una obra de Purias.
 
 ---
 
@@ -120,7 +120,7 @@ pérdida deja de verse, y se ha medido para no decirlo de oídas.
 | `trabajo2/3.png` (4,7 MB) | `.webp` a 1408, 1000 y 640 px + `.jpg` de reserva | 380–480 KB cada uno | **SSIM 0,991–0,994** |
 | `logo.png` | `logo-600.png`, 754 px nativos | 49 KB | sin pérdida |
 | `gafas3d.jpg` (6336×2688) | `proyecto-3d-{900,1400,2400}.webp` — fondo de la sección «Proyecto 3D» | 50–229 KB | q92 |
-| `cocinahistorica.jpg` (4800×3584) | `cocina-historica-{700,1140}.webp` + `.jpg` de reserva — foto de apoyo en «Historia» | 116–273 KB | q90–92 |
+| `cocinahistorica.jpg` (4800×3584) | `historia-fondo-{900,1400,2400}.webp` — fondo a sangre de «Cincuenta y cinco años…» | 155–766 KB | q90 |
 
 Los vídeos van a **CRF 14 con preset `veryslow`**, por encima del bitrate del
 propio original (2.293 kbps frente a 2.050): no se ha tirado información, solo
@@ -236,6 +236,21 @@ ventana en las cinco piezas.
   de lo que dispara—. Por eso las filas de `.fichas` llevan el texto envuelto
   en `<span class="fichas__texto">` en vez de ir suelto: sin un elemento que
   envuelva cada parte, `.reveal > *` no tiene qué clipar.
+- **El objetivo del `.reveal` tiene que ser un elemento de bloque, no en
+  línea.** Segunda trampa del mismo mecanismo, distinta de la anterior: si
+  `.reveal > *` recorta un `<span>` o un `<em>` en línea cuyo texto envuelve a
+  más de una línea, Chrome fragmenta ese elemento en varias cajas —una por
+  línea— y aplica el `clip-path` solo a la primera; el resto del texto
+  desaparece del todo, incluso con `.es-visible` puesto (`inset(0 0 0 0)`, que
+  debería significar «sin recorte»). Pasó en los dos párrafos de «Historia»
+  la primera vez que se escribieron como `<span class="reveal">` sueltos
+  dentro de un `<p>`: la segunda línea de cada frase se cortaba en seco. Todos
+  los demás usos de `.reveal` en la web se libran de esto sin querer, porque
+  recortan un elemento que ya es de bloque (`<div>`, `<figcaption>`, `<h3>`)
+  o un hijo de `.fichas li` —que al ser `display: grid` convierte sus `<span>`
+  en cajas de bloque aunque el HTML no lo diga—. En «Historia» hizo falta
+  forzarlo a mano: `.relato__destacado.reveal > *` y `.historia__resto.reveal
+  > *` llevan `display: block` explícito.
 - **El teléfono que rompe el filete inferior** no es un adorno: en el logotipo,
   los guiones se abren para dejar sitio al número. La web repite ese gesto.
 - **`--marco` y `--cruce` están atados.** El marco está metido hacia dentro
@@ -367,18 +382,33 @@ arriba: por abajo mantiene el `padding-bottom` original porque de él cuelga
 el filete que marca la sección activa, y moverlo habría separado la línea
 del texto.
 
-### La foto de «Historia» rompe el bloque de texto
+### «Historia» pasó de bloque de texto a remate fotográfico
 
-`#historia` era el peor caso de lectura en móvil: 818 px seguidos de prosa
-sobre fondo negro, sin una sola pausa visual. Se resolvió con dos cambios,
-ninguno un componente nuevo:
+Primera versión: `#historia` era el peor caso de lectura en móvil, 818 px
+seguidos de prosa sobre fondo negro. Se corrigió insertando `cocinahistorica.jpg`
+a media lectura y moviendo la prosa suelta a la lista `.fichas` que ya existía
+en «Proyecto 3D». Esa versión quedó obsoleta con el rediseño posterior:
 
-- Se inserta `cocinahistorica.jpg` a media lectura, dentro del mismo marco
-  recortado que ya usa la galería (`.trabajo__marco`) — la pieza no cambia,
-  solo el sitio donde vive.
-- Los dos párrafos finales, que eran prosa genérica sobre calidad y trato,
-  pasan a la lista `.fichas` que ya existía en «Proyecto 3D» — mismo
-  componente, reutilizado, no una tarjeta inventada para la ocasión.
+- **La sección se trasladó al final del recorrido**, justo antes de «Pásate
+  por la tienda»: el resto emocional («como en 1970») empuja directamente a
+  la llamada a la acción, en vez de gastarse nada más salir del hero.
+- **La foto dejó de ser un elemento dentro de la columna de texto y pasó a
+  ser el fondo de toda la sección**, con el mismo patrón de capas que el hero
+  y «Proyecto 3D» (imagen a sangre + velo degradado), más dos capas propias:
+  un filtro de color sobre la propia foto (`sepia() saturate() contrast()
+  brightness()`) para el aspecto de fotografía antigua, y un grano de
+  película hecho con una `feTurbulence` de SVG en línea — sin petición de red
+  ni archivo aparte, y reversible con solo quitar el filtro; el archivo del
+  cliente no se retoca.
+- **La lista `.fichas` (productos de calidad, asesoramiento, trato de
+  siempre) se reubicó** en una sección nueva, «Por qué elegirnos», justo
+  después del hero — mismo componente que ya usaba «Proyecto 3D», solo
+  cambia dónde vive, ahora como tarjeta de presentación antes de enseñar el
+  trabajo.
+- **Los dos párrafos que quedan en «Historia» se revelan por separado, en
+  cascada**, sobre la foto: primero la frase de 1970, 160 ms después el
+  resto. Aquí apareció una variante del bug de `.reveal` documentado más
+  abajo — ver «El objetivo del `.reveal` tiene que ser un bloque».
 
 Servicios recibió un ajuste menor: cada fila gana relleno lateral y un tinte
 casi imperceptible (`color-mix` al 3 % sobre `--veta`) para leerse como
