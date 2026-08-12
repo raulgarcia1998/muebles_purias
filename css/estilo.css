@@ -569,93 +569,17 @@
 
 
   /* ─── ANTES Y DESPUÉS ──────────────────────────────────────────────
-     El scroll no anima nada: mueve el tiempo del vídeo. Es el usuario
-     quien hace la obra.                                               */
+     Vídeo normal: se reproduce solo al acercarse, en bucle, sin que
+     haya que desplazar la página para verlo completo. Mismo marco
+     recortado que la galería (.trabajo__marco), la misma pieza. */
+  .reforma__pieza { margin: 0; }
 
-  /* Largo del recorrido. El vídeo tiene 240 fotogramas: cuanto más corta
-     sea la pista, menos píxeles hay que desplazar para pasar de uno al
-     siguiente y más se parece a movimiento en vez de a un pase de fotos.
-     260vh deja unos 6 px por fotograma, sin que la obra pase volando. */
-  .reforma__pista { height: 260vh; }
-
-  /* Cuatro filas: título, vídeo, barra y pie. Solo la del vídeo crece;
-     las otras tres ocupan lo que necesitan. Así el hueco sobrante va
-     siempre a la imagen. */
-  .reforma__fijo {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr) auto auto;
-    gap: clamp(0.85rem, 2vh, 1.5rem);
-    /* El aire de arriba deja libre la placa del menú, que va fija en la
-       esquina del marco: si se reduce, el título se le echa encima. */
-    padding: clamp(4rem, 9vh, 6rem) var(--aire) clamp(1.5rem, 3.5vh, 2.75rem);
-  }
-
-  /* En una sola línea el título ocupa menos alto que en dos, y ese alto
-     se lo queda el vídeo. */
-  .titulo--reforma { margin-bottom: 0; }
-  .titulo--reforma br { display: none; }
-
-  /* El visor tiene la proporción exacta del vídeo, así que crece hasta
-     donde le deja el hueco y no aparecen bandas negras por ningún lado.
-     El tope de 1.600 px evita ampliar un 720p más de lo razonable: por
-     encima de eso se vería blando, que es justo lo contrario de lo que
-     esta sección tiene que demostrar. */
-  .reforma__visor { min-height: 0; }
-
-  /* Se ve ENTERO. Antes iba con «cover» y recortaba la cocina por arriba
-     y por abajo para rellenar la caja: justo lo que no puede pasar en la
-     sección cuyo argumento es enseñar la reforma completa.
-
-     El elemento ocupa todo el hueco y es «contain» quien encaja la imagen
-     dentro, centrada y con su proporción intacta. Se probó antes con
-     «max-height: 100%» sobre el propio vídeo y no funciona: en un
-     elemento reemplazado dentro de una rejilla, ese porcentaje no llega a
-     limitar nada y el vídeo se salía por debajo, encima de la barra. */
   .reforma__video {
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
   }
-
-  .reforma__aviso { padding: 1rem; }
-
-  .reforma__barra {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .reforma__etiqueta {
-    font-family: var(--display);
-    font-variation-settings: 'wdth' 112, 'wght' 500;
-    font-size: 0.82rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    transition: opacity 0.2s linear;
-  }
-  .reforma__etiqueta--antes   { color: var(--veta); }
-  .reforma__etiqueta--despues { color: var(--veta); opacity: 0.35; }
-
-  .reforma__via {
-    position: relative;
-    height: 2px;
-    background: var(--filete-tenue);
-  }
-
-  /* La barra va del oro del roble viejo al hueso de la piedra nueva:
-     son los dos colores reales del vídeo, uno en cada extremo. */
-  .reforma__avance {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: 0%;
-    background: linear-gradient(to right, var(--roble), var(--veta));
-  }
-
-  .reforma__pista-texto { text-align: center; }
 
 
   /* ─── SERVICIOS · sin un solo icono ────────────────────────────── */
@@ -972,28 +896,6 @@
     .hero { padding-top: 10rem; }
     .hero__medio { inset: var(--marco) 0; }
 
-    /* En vertical, un 16:9 nunca va a ser alto. Lo que sí se puede es
-       darle todo el ancho disponible: el vídeo llega hasta las dos
-       verticales del marco. Se redefine --desborde para que el título
-       siga cruzando el filete exactamente igual que en el resto. */
-    .reforma__pista { height: 240vh; }
-    .reforma__fijo {
-      /* Aquí el panel arranca en la línea del marco, no en --aire, así que
-         el título solo tiene que retroceder esa misma distancia para
-         quedar a ras del borde igual que en el resto de secciones. */
-      --desborde: calc(-1 * var(--marco));
-      /* Aquí el menú no va fijo, así que no hay nada que esquivar arriba. */
-      padding: 2.5rem var(--marco) 1.5rem;
-      /* En vertical no hay alto que repartir: las cuatro filas ocupan lo
-         suyo y el grupo entero se centra. El visor toma la proporción del
-         vídeo para que su caja no sea más alta que la imagen. */
-      grid-template-rows: repeat(4, auto);
-      align-content: center;
-    }
-    .reforma__visor { aspect-ratio: 16 / 9; }
-    .reforma__barra,
-    .reforma__pista-texto { padding-inline: 0.35rem; }
-
     .fichas li { grid-template-columns: 1fr; }
   }
 
@@ -1023,11 +925,5 @@
 
     .marco__linea { transform: none !important; }
     .titulo { transform: none !important; }
-
-    /* El vídeo de la reforma deja de depender del scroll y pasa a tener
-       controles propios; la sección se queda quieta. */
-    .reforma__pista { height: auto; }
-    .reforma__fijo { position: static; height: auto; min-height: 0; }
-    .reforma__visor { aspect-ratio: 16 / 9; flex: none; }
   }
 }

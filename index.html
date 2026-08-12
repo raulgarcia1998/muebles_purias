@@ -193,40 +193,26 @@
   </section>
 
 
-  <!-- ─── ANTES Y DESPUÉS · el scroll mueve el tiempo ──────── -->
-  <section class="reforma" id="reforma" aria-labelledby="t-reforma">
-    <div class="reforma__pista" id="reforma-pista">
-      <div class="reforma__fijo">
+  <!-- ─── ANTES Y DESPUÉS ──────────────────────────────────────────── -->
+  <section class="seccion" id="reforma" aria-labelledby="t-reforma">
+    <h2 class="titulo" id="t-reforma">El antes y <br>el después</h2>
 
-        <h2 class="titulo titulo--reforma" id="t-reforma">El antes y <br>el después</h2>
-
-        <div class="reforma__visor">
-          <!-- Nace con controles y sin precarga: así funciona sin JavaScript
-               y no se descargan 1,8 MB que quizá nadie llegue a ver. El
-               guion se los quita y los sustituye por el scroll cuando el
-               usuario se acerca a la sección. -->
-          <video class="reforma__video" id="reforma-video"
-                 src="Recursos/optimizado/antes-despues.mp4"
-                 poster="Recursos/optimizado/antes-despues-poster.jpg"
-                 muted playsinline preload="none" controls
-                 aria-label="La misma cocina transformándose: parte de una cocina antigua de roble dorado con encimera de azulejo y electrodomésticos blancos, se vacía por completo y se levanta una cocina nueva de roble natural con isla de mármol negro veteado, grifería negra, vinoteca y una lámpara lineal escultórica."></video>
-          <noscript>
-            <p class="dato reforma__aviso">Activa JavaScript para recorrer la reforma con el scroll,
-              o reproduce el vídeo con los controles.</p>
-          </noscript>
-        </div>
-
-        <div class="reforma__barra">
-          <span class="reforma__etiqueta reforma__etiqueta--antes" id="etiqueta-antes">Antes</span>
-          <span class="reforma__via" aria-hidden="true">
-            <span class="reforma__avance" id="reforma-avance"></span>
-          </span>
-          <span class="reforma__etiqueta reforma__etiqueta--despues" id="etiqueta-despues">Después</span>
-        </div>
-
-        <p class="dato reforma__pista-texto" id="reforma-instruccion">desplaza para avanzar la obra</p>
+    <figure class="reforma__pieza">
+      <div class="trabajo__marco">
+        <!-- src y controls van en el HTML: el vídeo funciona sin una sola
+             línea de JavaScript, con el botón de reproducir nativo. El
+             guion solo añade la reproducción automática al acercarse. -->
+        <video class="reforma__video" id="reforma-video"
+               src="Recursos/optimizado/antes-despues.mp4"
+               poster="Recursos/optimizado/antes-despues-poster.jpg"
+               muted loop playsinline controls preload="none"
+               aria-label="La misma cocina transformándose: parte de una cocina antigua de roble dorado con encimera de azulejo y electrodomésticos blancos, se vacía por completo y se levanta una cocina nueva de roble natural con isla de mármol negro veteado, grifería negra, vinoteca y una lámpara lineal escultórica."></video>
       </div>
-    </div>
+      <figcaption class="trabajo__pie">
+        <span class="trabajo__tipo">Antes y después</span>
+        <span class="dato">la misma cocina, roble dorado a roble natural y mármol</span>
+      </figcaption>
+    </figure>
   </section>
 
 
