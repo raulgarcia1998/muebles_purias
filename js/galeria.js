@@ -39,16 +39,27 @@
 
     var prev = carrusel.querySelector('.carrusel__control--prev');
     var next = carrusel.querySelector('.carrusel__control--next');
-    if (prev) prev.addEventListener('click', function () {
-      pista.scrollBy({ left: -anchoPaso(pista, '.carrusel__foto'), behavior: reducido ? 'auto' : 'smooth' });
-    });
-    if (next) next.addEventListener('click', function () {
-      pista.scrollBy({ left: anchoPaso(pista, '.carrusel__foto'), behavior: reducido ? 'auto' : 'smooth' });
-    });
-
     var actual = carrusel.querySelector('.carrusel__contador-actual');
     var total = pista.querySelectorAll('.carrusel__foto').length;
-    if (!actual || total < 2) return;
+    if (total < 2) return; // nada que recorrer con una sola foto
+
+    // De la última foto, «siguiente» vuelve a la primera, y al revés
+    // desde la primera con «anterior» — el carrusel es un círculo, no
+    // se queda parado en seco contra los dos extremos. Esa vuelta en
+    // concreto va sin animación: deslizarla suave se vería como un
+    // retroceso por todas las fotos intermedias en vez de un salto al
+    // otro extremo. Los pasos normales siguen deslizándose.
+    function irAPaso(delta) {
+      var paso = anchoPaso(pista, '.carrusel__foto') || 1;
+      var idx = Math.round(pista.scrollLeft / paso);
+      var esVuelta = (delta > 0 && idx >= total - 1) || (delta < 0 && idx <= 0);
+      var destino = (idx + delta + total) % total;
+      pista.scrollTo({ left: destino * paso, behavior: (reducido || esVuelta) ? 'auto' : 'smooth' });
+    }
+    if (prev) prev.addEventListener('click', function () { irAPaso(-1); });
+    if (next) next.addEventListener('click', function () { irAPaso(1); });
+
+    if (!actual) return;
 
     var pendiente = false;
     pista.addEventListener('scroll', function () {
@@ -174,10 +185,14 @@
 
   function irA(delta) {
     var fotos = visorPista.querySelectorAll('.visor__foto');
-    var idx = Math.max(0, Math.min(fotos.length - 1, indiceActual + delta));
-    if (idx === indiceActual || !fotos[idx]) return;
-    indiceActual = idx;
-    fotos[idx].scrollIntoView({ block: 'nearest', inline: 'start', behavior: reducido ? 'auto' : 'smooth' });
+    if (!fotos.length) return;
+    // Circular, igual que las flechas de las tarjetas: de la última foto
+    // «siguiente» vuelve a la primera, y de la primera «anterior» va a
+    // la última — esa vuelta concreta salta sin animación, no desliza
+    // hacia atrás por todas las fotos intermedias.
+    var esVuelta = (delta > 0 && indiceActual >= fotos.length - 1) || (delta < 0 && indiceActual <= 0);
+    indiceActual = (indiceActual + delta + fotos.length) % fotos.length;
+    fotos[indiceActual].scrollIntoView({ block: 'nearest', inline: 'start', behavior: (reducido || esVuelta) ? 'auto' : 'smooth' });
   }
 
   function alTeclado(e) {
