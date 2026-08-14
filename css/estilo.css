@@ -166,41 +166,27 @@
     pointer-events: none;
   }
 
-  /* La esquina superior izquierda del marco se convierte en compartimento:
-     el logotipo la ocupa entera. Su borde exterior ES el filete del marco;
-     el interior lo cierra con el mismo filete. Así no es una caja puesta
-     encima de la página, es un hueco del propio marco. El fondo es
-     traslúcido y desenfocado para que la cocina siga viéndose por detrás. */
+  /* El archivo del cliente (Recursos/logo.png) no tiene canal alfa: es
+     tinta oscura sobre un fondo blanco sólido. En vez de invertirlo y
+     fundirlo con mix-blend-mode —lo que necesitaba una placa detrás para
+     garantizar que se leyera—, se generó aparte un derivado con
+     transparencia real: Recursos/optimizado/logo-marca.png, donde la
+     tinta pasa a hueso y el fondo a alfa 0. El archivo del cliente no se
+     toca, solo se lee para producir este derivado. Así el logotipo flota
+     sobre el vídeo sin ninguna caja, y una sombra suave —igual que en el
+     menú— hace de contraste en vez de un fondo. */
   .cabecera__logo {
     pointer-events: auto;
-    background: color-mix(in oklab, var(--noche) 62%, transparent);
-    backdrop-filter: blur(18px) saturate(135%);
-    -webkit-backdrop-filter: blur(18px) saturate(135%);
-    border-bottom: 1px solid var(--filete);
-    border-right: 1px solid var(--filete);
     display: block;
-    padding: 0.75rem clamp(0.9rem, 2vw, 1.6rem) 0.85rem;
-    margin: calc(-1 * clamp(0.9rem, 2vh, 1.7rem)) 0 0 calc(-1 * clamp(0.75rem, 2.5vw, 2.25rem));
     line-height: 0;
-  }
-
-  /* Sin desenfoque disponible, se cierra en opaco antes que dejar el texto
-     ilegible sobre el vídeo. */
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .cabecera__logo { background: var(--noche); }
   }
 
   .cabecera__logo img {
     width: clamp(92px, 10.5vw, 142px);
     height: auto;
-    /* El PNG del cliente no tiene transparencia: se invierte y se funde
-       con el fondo. El archivo original no se toca. */
-    /* El PNG del cliente no tiene canal alfa. Al invertirlo, su fondo
-       blanco (#FEFEFE) queda en #010101: casi negro, pero no negro, y
-       en «screen» eso deja un rectángulo fantasma. El contraste extra
-       lo lleva a negro puro y el recuadro desaparece. */
-    filter: invert(1) contrast(1.25);
-    mix-blend-mode: screen;
+    filter:
+      drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 8px 20px rgba(0, 0, 0, 0.35));
   }
 
   /* El menú sí acompaña, porque sirve para algo. Va a la derecha, donde
@@ -1219,12 +1205,6 @@
   .pie__logo img {
     margin-inline: auto;            /* cierra la visita centrado */
     width: clamp(180px, 26vw, 320px);
-    /* El PNG del cliente no tiene canal alfa. Al invertirlo, su fondo
-       blanco (#FEFEFE) queda en #010101: casi negro, pero no negro, y
-       en «screen» eso deja un rectángulo fantasma. El contraste extra
-       lo lleva a negro puro y el recuadro desaparece. */
-    filter: invert(1) contrast(1.25);
-    mix-blend-mode: screen;
   }
 
   .pie__columnas {

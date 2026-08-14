@@ -125,7 +125,8 @@ pérdida deja de verse, y se ha medido para no decirlo de oídas.
 | ídem | `antes-despues-480.mp4` — la misma pieza a 854×480 para pantallas estrechas | 5,4 MB | PSNR 42,1 dB |
 | `kam-idris-…-unsplash.jpg` (3400×3000) | `cocina-roble-ancha-*` (2,2:1) y `cocina-roble-alta-*` (3:2), en `.webp` + `.jpg` de reserva | 90 KB – 878 KB | **SSIM 0,995** |
 | `trabajo2/3.png` (4,7 MB) | `.webp` a 1408, 1000 y 640 px + `.jpg` de reserva | 380–480 KB cada uno | **SSIM 0,991–0,994** |
-| `logo.png` | `logo-600.png`, 754 px nativos | 49 KB | sin pérdida |
+| `logo.png` | `logo-600.png` (opaco, favicon/JSON-LD), 754 px nativos | 49 KB | sin pérdida |
+| ídem | `logo-marca.png` — mismo trazo con transparencia real, tinta en color hueso (ver abajo) | 27 KB | sin pérdida |
 | `gafas3d.jpg` (6336×2688) | `proyecto-3d-{900,1400,2400}.webp` — fondo de la sección «Proyecto 3D» | 50–229 KB | q92 |
 | `cocinahistorica.jpg` (4800×3584) | `historia-fondo-{900,1400,2400}.webp` — fondo a sangre de «Cincuenta y cinco años…» | 155–766 KB | q90 |
 | 10 fotos generadas de la galería (~5500×3072 cada una) | `galeria-{categoría}-{n}-{800,1400,2200}.webp` + `.jpg` de reserva a 2200 — recorte centrado de 1,8:1 a 3:2 en el propio pipeline | 35–475 KB cada derivado | q88 |
@@ -198,11 +199,22 @@ para ganar 0,006 de SSIM, que es exactamente nada a ojo.
 
 ### El logotipo sobre fondo oscuro
 
-`logo.png` no tiene transparencia: es tinta negra sobre un blanco opaco. Sobre
-el fondo oscuro se resuelve por CSS con `filter: invert(1) contrast(1.25)` y
-`mix-blend-mode: screen`, sin retocar ni redibujar el archivo del cliente. El
-contraste extra lleva el blanco invertido a negro puro; sin él quedaría un
-rectángulo fantasma alrededor del logotipo.
+`logo.png` no tiene transparencia: es tinta oscura sobre un blanco opaco. La
+primera versión lo resolvía por CSS con `filter: invert(1) contrast(1.25)` y
+`mix-blend-mode: screen` — funcionaba, pero necesitaba una placa opaca detrás
+para garantizar el contraste, y esa placa se leía como una caja pegada encima
+del vídeo.
+
+Se sustituyó por un derivado generado con `sharp` a partir del mismo
+`logo.png` (que no se toca): por cada píxel se calcula la luminancia y se
+escribe un nuevo PNG con la tinta en color hueso (`--veta`) y alfa real —
+transparente donde había blanco, opaco donde había tinta, con el degradado
+intermedio de la propia antialiasing del original. El resultado,
+`logo-marca.png`, flota directamente sobre el vídeo o el fondo oscuro sin
+ninguna placa; el contraste lo da un `filter: drop-shadow(...)` en vez de un
+fondo, el mismo lenguaje que el menú (ver «Sin placa» más abajo). El favicon,
+el `apple-touch-icon` y el `logo` del JSON-LD siguen usando `logo-600.png`
+(opaco), porque ahí sí hace falta un fondo sólido.
 
 ---
 
@@ -390,15 +402,20 @@ ventana en las cinco piezas.
   títulos al desbordar. Si se estrecha `--marco`, hay que estrechar `--cruce`
   en la misma medida. Comprobado de 390 a 1920 px: el título cruza entre 18 y
   38 px y nunca se sale de la pantalla.
-- **El logotipo y el menú no son dos cajas encima de la página: son las dos
-  esquinas superiores del marco.** Sus bordes exteriores *son* los filetes del
-  marco y los interiores los cierran con el mismo trazo de 1 px. Si se les
-  cambia la posición o se les pone un margen, dejan de encajar y vuelven a
-  parecer banners pegados. El fondo es traslúcido con desenfoque para que la
-  cocina siga viéndose por detrás.
+- **El logotipo no es una caja encima de la página: es la esquina superior
+  izquierda del marco.** Su borde exterior *es* el filete del marco y el
+  interior lo cierra con el mismo trazo de 1 px. Si se le cambia la posición o
+  se le pone un margen, deja de encajar y vuelve a parecer un banner pegado.
+  El fondo es traslúcido con desenfoque para que la cocina siga viéndose por
+  detrás.
+- **El menú no lleva placa.** La tuvo al principio —compartía compartimento
+  con el logotipo—, pero una lista de enlaces no necesita el mismo peso visual
+  que la firma, y esa placa se leía como un rectángulo oscuro pegado sobre el
+  vídeo. Ahora es texto suelto en la misma familia expandida del logotipo, con
+  `text-shadow` en vez de fondo para seguir leyéndose pase lo que pase detrás.
 - **Todas las entradas del menú van en hueso, no en gris.** Detrás corre el
-  vídeo: un gris medio sobre fondo traslúcido no garantiza contraste si en ese
-  instante pasa un reflejo claro. Lo que marca la sección actual es el filete
+  vídeo: un gris medio sin placa no garantiza contraste si en ese instante
+  pasa un tramo claro. Lo que marca la sección actual es el filete
   de debajo, no el color. Medido sobre píxeles reales: 8,4:1.
 - **El vídeo de la reforma se ve entero, sin recortar.** La sección es una
   rejilla de cuatro filas (título, vídeo, barra, pie) donde solo crece la del
@@ -572,6 +589,6 @@ en «Proyecto 3D». Esa versión quedó obsoleta con el rediseño posterior:
 Servicios recibió un ajuste menor: cada fila gana relleno lateral y un tinte
 casi imperceptible (`color-mix` al 3 % sobre `--veta`) para leerse como
 tarjeta en vez de solo texto con una línea debajo. Es el mismo lenguaje
-traslúcido que ya usan las placas del menú, no un color nuevo. Medido: el
+traslúcido que ya usa la placa del logotipo, no un color nuevo. Medido: el
 texto secundario sigue en 5,56:1 sobre el fondo compuesto, por encima del
 4,5:1 exigido.
