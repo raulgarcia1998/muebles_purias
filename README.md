@@ -381,6 +381,26 @@ ventana en las cinco piezas.
   inicial **después** de quitar `hidden`, nunca antes — si se invierte el
   orden, el visor siempre abre en la primera foto de la categoría en vez de
   en la que se pinchó, sin ningún error visible que lo delate.
+- **La vuelta circular del carrusel (de la última foto a la primera, y al
+  revés) anima con un clon temporal, no con `scrollLeft` a pelo.** Se añade
+  un clon puramente visual de la foto de destino al otro lado de la pista,
+  se desliza hasta él como un paso normal y, al asentarse, se cambia al
+  original real de un salto invisible. Dos trampas de navegador hicieron
+  falta dos intentos:
+  1. **`overflow-anchor` reajusta el scroll por su cuenta** al insertar
+     contenido delante de la vista actual (para no descolocar al lector en
+     un feed infinito) — compite con el salto en seco que compensa el
+     hueco del clon y la animación no llega a arrancar. Se desactiva
+     (`overflow-anchor: none`) mientras dura la maniobra.
+  2. **El salto en seco dispara su propio `scrollend`.** Si el aviso de
+     «ya se asentó» (`alAsentarScroll`, con `scrollend` y una red de
+     seguridad por temporizador) se engancha antes de ese salto, se
+     dispara con él en vez de esperar al deslizamiento de verdad, y la
+     vuelta hacia atrás se resuelve en un parpadeo. Se engancha **después**
+     del salto en seco, justo cuando arranca el `scrollTo` suave.
+  Verificado grabando el `scrollLeft` fotograma a fotograma: sin el
+  arreglo, la vuelta hacia adelante animaba pero la vuelta hacia atrás
+  saltaba en un solo `requestAnimationFrame`.
 - **El objetivo del `.reveal` tiene que ser un elemento de bloque, no en
   línea.** Segunda trampa del mismo mecanismo, distinta de la anterior: si
   `.reveal > *` recorta un `<span>` o un `<em>` en línea cuyo texto envuelve a

@@ -37,6 +37,35 @@
     return foto.getBoundingClientRect().width + salto;
   }
 
+  // Avisa cuando una pista termina de deslizarse. «scrollend» es lo
+  // exacto, pero aún no está en todos los navegadores: un margen de
+  // seguridad por temporizador cubre a los que no lo disparan, igual
+  // que ya hace «cerrar()» del visor con «transitionend».
+  function alAsentarScroll(elemento, cb) {
+    var hecho = false;
+    function una() {
+      if (hecho) return;
+      hecho = true;
+      elemento.removeEventListener('scrollend', una);
+      cb();
+    }
+    if ('onscrollend' in window) elemento.addEventListener('scrollend', una, { once: true });
+    setTimeout(una, 500);
+  }
+
+  // Convierte un <figure> de foto en un clon puramente visual: invisible
+  // para lectores de pantalla y fuera del recorrido de tabulación,
+  // porque solo existe un instante para que la pista tenga a dónde
+  // deslizarse.
+  function clonarFotoMuda(foto) {
+    var clon = foto.cloneNode(true);
+    clon.setAttribute('aria-hidden', 'true');
+    Array.prototype.forEach.call(clon.querySelectorAll('a, button, [tabindex]'), function (el) {
+      el.tabIndex = -1;
+    });
+    return clon;
+  }
+
   /* ── Carrusel de cada tarjeta: flechas + contador en vivo ─────────── */
 
   Array.prototype.forEach.call(galeria.querySelectorAll('.carrusel'), function (carrusel) {
@@ -49,18 +78,69 @@
     var total = pista.querySelectorAll('.carrusel__foto').length;
     if (total < 2) return; // nada que recorrer con una sola foto
 
+    var vueltaEnCurso = false;
+
     // De la última foto, «siguiente» vuelve a la primera, y al revés
     // desde la primera con «anterior» — el carrusel es un círculo, no
-    // se queda parado en seco contra los dos extremos. Esa vuelta en
-    // concreto va sin animación: deslizarla suave se vería como un
-    // retroceso por todas las fotos intermedias en vez de un salto al
-    // otro extremo. Los pasos normales siguen deslizándose.
+    // se queda parado en seco contra los dos extremos. Esa vuelta ya no
+    // salta en seco: se añade un clon puramente visual de la foto de
+    // destino justo al otro lado de la pista, se desliza hasta él con la
+    // misma animación que un paso normal y, en cuanto se asienta, se
+    // cambia al original real de un salto invisible —el clon es
+    // idéntico, píxel a píxel—. Así se siente un círculo de verdad, sin
+    // el salto en seco de antes ni el retroceso por las fotos de en medio.
+    function vuelta(direccion) {
+      vueltaEnCurso = true;
+      var paso = anchoPaso(pista, '.carrusel__foto') || 1;
+      var reales = pista.querySelectorAll('.carrusel__foto');
+      var clon = clonarFotoMuda(direccion > 0 ? reales[0] : reales[reales.length - 1]);
+      // Sin esto, el «scroll anchoring» del navegador reajusta por su
+      // cuenta el scroll al insertar el clon delante de la vista actual,
+      // y esa segunda mano compite con el salto en seco de abajo —el
+      // resultado es que la animación de vuelta nunca llega a arrancar.
+      pista.style.overflowAnchor = 'none';
+
+      function terminar() {
+        clon.remove();
+        var destinoIdx = direccion > 0 ? 0 : total - 1;
+        pista.scrollTo({ left: destinoIdx * paso, behavior: 'auto' });
+        pista.style.overflowAnchor = '';
+        if (actual) actual.textContent = String(destinoIdx + 1);
+        vueltaEnCurso = false;
+      }
+
+      if (direccion > 0) {
+        pista.appendChild(clon);
+        pista.scrollTo({ left: total * paso, behavior: 'smooth' });
+        alAsentarScroll(pista, terminar);
+      } else {
+        pista.insertBefore(clon, pista.firstChild);
+        // Compensa en seco el hueco que acaba de abrir el clon delante:
+        // sin esto, insertarlo empujaría la vista actual hacia la derecha.
+        // Ese salto dispara su propio «scrollend», así que el aviso de
+        // asentado se engancha después, cuando arranca el deslizamiento
+        // de verdad — si no, se dispara con el salto en seco y la
+        // animación no llega ni a empezar.
+        pista.scrollTo({ left: paso, behavior: 'auto' });
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            pista.scrollTo({ left: 0, behavior: 'smooth' });
+            alAsentarScroll(pista, terminar);
+          });
+        });
+      }
+    }
+
     function irAPaso(delta) {
+      if (vueltaEnCurso) return;
       var paso = anchoPaso(pista, '.carrusel__foto') || 1;
       var idx = Math.round(pista.scrollLeft / paso);
       var esVuelta = (delta > 0 && idx >= total - 1) || (delta < 0 && idx <= 0);
+
+      if (esVuelta && !reducido) { vuelta(delta > 0 ? 1 : -1); return; }
+
       var destino = (idx + delta + total) % total;
-      pista.scrollTo({ left: destino * paso, behavior: (reducido || esVuelta) ? 'auto' : 'smooth' });
+      pista.scrollTo({ left: destino * paso, behavior: reducido ? 'auto' : 'smooth' });
     }
     if (prev) prev.addEventListener('click', function () { irAPaso(-1); });
     if (next) next.addEventListener('click', function () { irAPaso(1); });
@@ -69,7 +149,7 @@
 
     var pendiente = false;
     pista.addEventListener('scroll', function () {
-      if (pendiente) return;
+      if (vueltaEnCurso || pendiente) return;
       pendiente = true;
       requestAnimationFrame(function () {
         var paso = anchoPaso(pista, '.carrusel__foto') || 1;
@@ -268,6 +348,7 @@
   var disparador = null;
   var cerrando = false;
   var restablecerZoomFns = [];
+  var vueltaVisorEnCurso = false;
 
   function construirVisor(pista, indiceInicial) {
     visorPista.textContent = '';
@@ -390,16 +471,53 @@
     setTimeout(terminar, 450);
   }
 
+  // Misma vuelta con clon que en las tarjetas (ver «vuelta» más arriba),
+  // aplicada a la pista del visor.
+  function vueltaVisor(direccion, total) {
+    vueltaVisorEnCurso = true;
+    var paso = anchoPaso(visorPista, '.visor__foto') || 1;
+    var reales = visorPista.querySelectorAll('.visor__foto');
+    var clon = clonarFotoMuda(direccion > 0 ? reales[0] : reales[reales.length - 1]);
+    visorPista.style.overflowAnchor = 'none';
+
+    function terminar() {
+      clon.remove();
+      indiceActual = direccion > 0 ? 0 : total - 1;
+      visorPista.scrollTo({ left: indiceActual * paso, behavior: 'auto' });
+      visorPista.style.overflowAnchor = '';
+      restablecerZoomFns.forEach(function (fn) { fn(); });
+      vueltaVisorEnCurso = false;
+    }
+
+    if (direccion > 0) {
+      visorPista.appendChild(clon);
+      visorPista.scrollTo({ left: total * paso, behavior: 'smooth' });
+      alAsentarScroll(visorPista, terminar);
+    } else {
+      visorPista.insertBefore(clon, visorPista.firstChild);
+      visorPista.scrollTo({ left: paso, behavior: 'auto' });
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          visorPista.scrollTo({ left: 0, behavior: 'smooth' });
+          alAsentarScroll(visorPista, terminar);
+        });
+      });
+    }
+  }
+
   function irA(delta) {
+    if (vueltaVisorEnCurso) return;
     var fotos = visorPista.querySelectorAll('.visor__foto');
     if (!fotos.length) return;
     // Circular, igual que las flechas de las tarjetas: de la última foto
     // «siguiente» vuelve a la primera, y de la primera «anterior» va a
-    // la última — esa vuelta concreta salta sin animación, no desliza
-    // hacia atrás por todas las fotos intermedias.
+    // la última.
     var esVuelta = (delta > 0 && indiceActual >= fotos.length - 1) || (delta < 0 && indiceActual <= 0);
+
+    if (esVuelta && !reducido) { vueltaVisor(delta > 0 ? 1 : -1, fotos.length); return; }
+
     indiceActual = (indiceActual + delta + fotos.length) % fotos.length;
-    fotos[indiceActual].scrollIntoView({ block: 'nearest', inline: 'start', behavior: (reducido || esVuelta) ? 'auto' : 'smooth' });
+    fotos[indiceActual].scrollIntoView({ block: 'nearest', inline: 'start', behavior: reducido ? 'auto' : 'smooth' });
   }
 
   function alTeclado(e) {
@@ -426,7 +544,7 @@
   // puede quedarse ampliada.
   var pendienteVisor = false;
   visorPista.addEventListener('scroll', function () {
-    if (pendienteVisor) return;
+    if (vueltaVisorEnCurso || pendienteVisor) return;
     pendienteVisor = true;
     requestAnimationFrame(function () {
       var fotos = visorPista.querySelectorAll('.visor__foto');
