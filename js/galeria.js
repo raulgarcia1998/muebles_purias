@@ -86,7 +86,15 @@
 
       var marco = document.createElement('div');
       marco.className = 'visor__marco';
-      marco.appendChild(pictureOrigen.cloneNode(true));
+      var pictureClonada = pictureOrigen.cloneNode(true);
+      // El «sizes» original describe el hueco de la tarjeta (p. ej. 38vw
+      // en Salón) — aquí la foto ocupa casi toda la pantalla, así que hay
+      // que decírselo de nuevo o el navegador sigue sirviendo el archivo
+      // pensado para la tarjeta pequeña, y se ve borrosa o diminuta.
+      Array.prototype.forEach.call(pictureClonada.querySelectorAll('source[sizes]'), function (fuente) {
+        fuente.sizes = '92vw';
+      });
+      marco.appendChild(pictureClonada);
 
       var pie = document.createElement('figcaption');
       pie.className = 'visor__pie';
