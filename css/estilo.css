@@ -360,7 +360,8 @@
     transform: translateX(clamp(1.5rem, 6vw, 3.5rem));
   }
   .galeria .trabajo.reveal--lateral:nth-of-type(2) > *,
-  .galeria .trabajo.reveal--lateral:nth-of-type(3) > * {
+  .galeria .trabajo.reveal--lateral:nth-of-type(3) > *,
+  .galeria .trabajo.reveal--lateral:nth-of-type(4) > * {
     transition-duration: 1.2s;
   }
 
@@ -371,15 +372,7 @@
      el mismo fotograma. */
   .galeria .trabajo.reveal:nth-of-type(2) > * { transition-delay: 60ms; }
   .galeria .trabajo.reveal:nth-of-type(3) > * { transition-delay: 120ms; }
-
-  .espacios__lista .espacios__categoria.reveal--lateral:nth-of-type(2) > *,
-  .espacios__lista .espacios__categoria.reveal--lateral:nth-of-type(3) > *,
-  .espacios__lista .espacios__categoria.reveal--lateral:nth-of-type(4) > * {
-    transition-duration: 1.2s;
-  }
-  .espacios__lista .espacios__categoria.reveal:nth-of-type(2) > * { transition-delay: 60ms; }
-  .espacios__lista .espacios__categoria.reveal:nth-of-type(3) > * { transition-delay: 120ms; }
-  .espacios__lista .espacios__categoria.reveal:nth-of-type(4) > * { transition-delay: 180ms; }
+  .galeria .trabajo.reveal:nth-of-type(4) > * { transition-delay: 180ms; }
 
   .fichas li.reveal:nth-child(2) > * { transition-delay: 60ms; }
   .fichas li.reveal:nth-child(3) > * { transition-delay: 120ms; }
@@ -640,68 +633,21 @@
 
 
   /* ─── GALERÍA ──────────────────────────────────────────────────────
-     La cocina no comparte fila con nadie: es la especialidad de la casa.
-     El salón y el vestidor sí, y en proporción desigual.               */
+     La cocina no comparte fila con nadie: es la especialidad de la casa
+     y ocupa una fila propia a ancho completo. Salón, Dormitorio y Baño
+     se reparten la fila siguiente en proporción desigual. Cada hueco es
+     su propio carrusel —scroll-snap nativo, funciona sin JavaScript—
+     con un título superpuesto a la foto y un contador que seguido el
+     gesto de deslizar. Pinchar cualquier foto abre el visor a pantalla
+     completa (más abajo) para recorrer esa categoría en detalle. */
 
   .galeria {
-    display: grid;
-    grid-template-columns: 1.55fr 1fr;
-    gap: clamp(1.5rem, 3.5vw, 3.25rem);
-  }
-
-  .trabajo { margin: 0; }
-
-  .trabajo--principal { grid-column: 1 / -1; }
-
-  .trabajo__marco { overflow: hidden; background: var(--nogal); }
-
-  .trabajo__marco img {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    filter: saturate(0.94);
-  }
-  /* Panorámica a 2,2:1: ancho completo y en primer plano, pero sin comerse
-     la pantalla al llegar a la galería. Debe coincidir con el encuadre del
-     archivo que sirve <picture>; si se cambia aquí, hay que regenerar la
-     imagen con la misma proporción o saldrá deformada. */
-  .trabajo--principal .trabajo__marco img { aspect-ratio: 2.2 / 1; }
-
-  .trabajo__pie {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.5rem 1.4rem;
-    padding-top: 1rem;
-    margin-top: 1rem;
-    border-top: 1px solid var(--filete);
-  }
-
-  .trabajo__tipo {
-    font-family: var(--display);
-    font-variation-settings: 'wdth' 112, 'wght' 500;
-    font-size: 0.95rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-
-  /* ─── ESPACIOS · explora por categoría ────────────────────────────
-     Mismas proporciones que la GALERÍA de «Trabajos realizados», justo
-     encima: la cocina manda —fila propia, a ancho completo— y el resto
-     se reparte una segunda fila en proporción desigual. La diferencia
-     es que aquí cada hueco no es una foto suelta: es su propio carrusel
-     de scroll-snap nativo, con un contador «01 / 03» que se actualiza
-     al deslizar. El pie de foto reutiliza literalmente .trabajo__pie y
-     .trabajo__tipo — mismo idioma visual, no una segunda versión. */
-
-  .espacios__lista {
     display: grid;
     grid-template-columns: 1.4fr 1.1fr 0.85fr;
     gap: clamp(1.5rem, 3.5vw, 3.25rem);
   }
 
-  .espacios__categoria {
+  .trabajo {
     margin: 0;
     /* Un ítem de grid mide, por defecto, min-width:auto — el ancho sin
        recortar de la imagen puede superar su reparto en fr y desbaratar
@@ -709,10 +655,10 @@
     min-width: 0;
   }
 
-  .espacios__categoria--principal { grid-column: 1 / -1; }
+  .trabajo--principal { grid-column: 1 / -1; }
 
   @media (max-width: 900px) {
-    .espacios__lista { grid-template-columns: 1fr; }
+    .galeria { grid-template-columns: 1fr; }
   }
 
   /* — El carrusel: funciona igual con o sin JS. El scroll horizontal
@@ -736,25 +682,72 @@
     scroll-snap-align: start;
   }
 
-  .carrusel__marco {
-    overflow: hidden;
-    background: var(--nogal);
+  /* La foto entera es un <button>: pinchar en cualquier punto —imagen
+     o título— abre el visor. Reseteado a cero para que no se note que
+     es un botón hasta que se enfoca o se pasa el ratón por encima. */
+  .carrusel__abrir {
+    display: block;
+    position: relative;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+    cursor: zoom-in;
   }
-  .carrusel__marco img {
+
+  .trabajo__marco { overflow: hidden; background: var(--nogal); }
+
+  .trabajo__marco img {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     filter: saturate(0.94);
+    transition: transform 0.5s var(--curva);
   }
-  /* Panorámica a 2,2:1 como la pieza principal de «Trabajos», y con el
-     mismo cambio a 3:2 por debajo de los 900px — mismo punto de corte,
-     misma razón: una tira tan ancha se queda en un hilo en pantallas
-     estrechas. La primera foto de Cocinas ya trae un recorte dedicado a
-     2,2:1 (cocina-roble-ancha); las demás se recortan en el navegador. */
-  .espacios__categoria--principal .carrusel__marco img { aspect-ratio: 2.2 / 1; }
+  /* Panorámica a 2,2:1: ancho completo y en primer plano, pero sin comerse
+     la pantalla al llegar a la galería. Con el cambio a 3:2 por debajo de
+     los 900px, donde una tira tan ancha se queda en un hilo. */
+  .trabajo--principal .trabajo__marco img { aspect-ratio: 2.2 / 1; }
   @media (max-width: 900px) {
-    .espacios__categoria--principal .carrusel__marco img { aspect-ratio: 3 / 2; }
+    .trabajo--principal .trabajo__marco img { aspect-ratio: 3 / 2; }
   }
+  @media (hover: hover) and (pointer: fine) {
+    .carrusel__abrir:hover .trabajo__marco img { transform: scale(1.035); }
+  }
+
+  /* El título vive sobre la foto, no debajo: un degradado oscuro solo en
+     el tercio inferior mantiene el texto legible sea cual sea la foto,
+     sin necesitar una franja sólida que le reste protagonismo a la obra. */
+  .trabajo__overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 1.2rem;
+    padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 2.5vw, 1.5rem) clamp(0.85rem, 2vw, 1.15rem);
+    background: linear-gradient(to top,
+      rgba(10, 8, 6, 0.85) 0%,
+      rgba(10, 8, 6, 0.45) 55%,
+      transparent 100%);
+  }
+
+  .trabajo__tipo {
+    font-family: var(--display);
+    font-variation-settings: 'wdth' 112, 'wght' 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--veta);
+  }
+  .trabajo--principal .trabajo__tipo {
+    font-size: clamp(1.15rem, 0.95rem + 0.7vw, 1.6rem);
+  }
+
+  .trabajo__overlay .dato { color: color-mix(in oklab, var(--veta) 75%, transparent); }
 
   .carrusel__controles {
     display: flex;
@@ -772,22 +765,25 @@
 
   .carrusel__botones { display: flex; gap: 0.4rem; }
 
+  /* 2,75rem = 44px, el objetivo táctil mínimo cómodo ya medido y
+     corregido en el resto de la web (ver «Objetivos táctiles» en el
+     README) — no hay motivo para que el carrusel sea la excepción. */
   .carrusel__control {
-    width: 2rem;
-    height: 2rem;
+    width: 2.75rem;
+    height: 2.75rem;
     border: 1px solid var(--filete);
     background: transparent;
     color: var(--veta);
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1;
     cursor: pointer;
     transition: transform 0.16s var(--curva), background-color 0.25s var(--curva), border-color 0.25s var(--curva);
   }
   /* La fila de la cocina es mucho más grande que el resto; sus flechas
-     acompañan esa escala en vez de quedarse en el mismo tamaño diminuto. */
-  .espacios__categoria--principal .carrusel__control {
-    width: 2.5rem;
-    height: 2.5rem;
+     acompañan esa escala en vez de quedarse en el mismo tamaño que las demás. */
+  .trabajo--principal .carrusel__control {
+    width: 3rem;
+    height: 3rem;
     font-size: 1.15rem;
   }
   @media (hover: hover) and (pointer: fine) {
@@ -797,6 +793,106 @@
     }
   }
   .carrusel__control:active { transform: scale(0.9); }
+
+
+  /* ─── VISOR · pantalla completa ────────────────────────────────────
+     Se abre al pinchar cualquier foto de la galería. Muestra las fotos
+     de esa misma categoría sin recortar —object-fit:contain en vez del
+     «cover» de la tarjeta— para que «ver a detalle» enseñe más encuadre
+     del que la tarjeta insinúa, no la misma imagen ampliada sin más.
+     js/galeria.js clona el <picture> ya presente en el DOM: ni una URL
+     de imagen duplicada entre la tarjeta y el visor. */
+
+  .visor {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--noche);
+    opacity: 0;
+    transition: opacity 0.35s var(--curva);
+  }
+  .visor[hidden] { display: none; }
+  .visor.visor--visible { opacity: 1; }
+
+  .visor__contenido { position: relative; width: 100%; height: 100%; }
+
+  .visor__pista {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .visor__pista::-webkit-scrollbar { display: none; }
+
+  .visor__foto {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: clamp(3.5rem, 9vh, 6rem) clamp(1.25rem, 6vw, 5rem) clamp(2rem, 5vh, 3rem);
+    scroll-snap-align: start;
+  }
+
+  .visor__marco { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
+  .visor__marco img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+
+  .visor__pie {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.4rem;
+    color: var(--hormigon);
+    text-align: center;
+  }
+  .visor__pie .trabajo__tipo { color: var(--veta); }
+
+  .visor__cerrar,
+  .visor__control {
+    position: absolute;
+    border: 1px solid var(--filete);
+    background: color-mix(in oklab, var(--noche) 70%, transparent);
+    color: var(--veta);
+    cursor: pointer;
+    transition: transform 0.16s var(--curva), background-color 0.25s var(--curva), border-color 0.25s var(--curva);
+  }
+  .visor__cerrar {
+    top: clamp(1rem, 3vw, 2rem);
+    right: clamp(1rem, 3vw, 2rem);
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.2rem;
+  }
+  .visor__control {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.3rem;
+  }
+  .visor__control--prev { left: clamp(0.5rem, 2.5vw, 1.75rem); }
+  .visor__control--next { right: clamp(0.5rem, 2.5vw, 1.75rem); }
+  @media (hover: hover) and (pointer: fine) {
+    .visor__cerrar:hover,
+    .visor__control:hover {
+      background: color-mix(in oklab, var(--veta) 10%, var(--noche));
+      border-color: var(--veta);
+    }
+  }
+  .visor__cerrar:active,
+  .visor__control:active { transform: scale(0.92); }
+  .visor__control:active { transform: translateY(-50%) scale(0.92); }
+
+  @media (max-width: 640px) {
+    .visor__control { width: 2.75rem; height: 2.75rem; font-size: 1.1rem; }
+    .visor__cerrar { width: 2.75rem; height: 2.75rem; }
+  }
 
 
   /* ─── ANTES Y DESPUÉS ──────────────────────────────────────────────

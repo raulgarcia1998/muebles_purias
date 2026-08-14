@@ -70,7 +70,7 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
 | **Horario comercial** | No se ha inventado ninguno. Cuando lo dé, va en la sección «Pásate por la tienda» y en el `openingHours` del JSON-LD del final de `index.html`, que es lo que lee Google para la ficha del negocio. |
 | **Foto de la tienda o del equipo** | Es la ausencia que más se nota: en una empresa que vende trato personal desde 1970, una cara y una fachada valen más que un render. Iría en «Pásate por la tienda». |
 | **Captura del software 3D** | El proyecto 3D es el mayor argumento de venta del negocio y es la única sección que no tiene ninguna imagen. |
-| **Fotos reales de «Espacios» (opcional)** | Las doce fotos actuales son en su mayoría generadas por IA, más dos duplicadas de «Trabajos realizados» — ver «Espacios · explora por categoría» más abajo. Sustituir cualquiera de ellas por fotografía real de un trabajo de Purias es tan simple como cambiar el `src`/`srcset` de su `.carrusel__foto` en `index.html`. |
+| **Fotos reales de «Trabajos realizados» (opcional)** | De las doce fotos de la galería, diez son generadas por IA — ver el aviso 2 más abajo. Sustituir cualquiera de ellas por fotografía real de un trabajo de Purias es tan simple como cambiar el `<picture>` de su `.carrusel__foto` en `index.html` y regenerar sus derivados con `Recursos/optimizado/` (mismo pipeline que el resto). |
 | **Nombre y localidad de cada obra** | La galería describe cada trabajo por tipología y materiales, que es lo único verificable ahora mismo. |
 | **Dominio definitivo** | Está puesto `https://www.mueblespurias.com/` en **cinco sitios**: la etiqueta canónica, `og:url`, `og:image`, el JSON-LD (todo en `index.html`), más `robots.txt` y `sitemap.xml`. Si el dominio es otro, hay que cambiarlo en los cinco. La URL de `og:image` **tiene que ser absoluta**: con una ruta relativa, el enlace se comparte por WhatsApp sin miniatura. |
 
@@ -79,14 +79,20 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
 1. **Los dos vídeos llevaban una marca de agua de IA** (la estrella de cuatro
    puntas, abajo a la derecha). Se ha eliminado por interpolación en las copias
    de `Recursos/optimizado/`. Los originales están intactos y sin tocar.
-2. **Nada de lo que hay en la galería es obra propia fotografiada.** Las dos
-   imágenes del salón y el vestidor y los dos vídeos son material generado; la
-   cocina es una **fotografía de Unsplash** (autor: Kam Idris). La licencia de
-   Unsplash permite el uso comercial sin atribución, así que legalmente no hay
-   problema, pero están bajo un titular que dice «Trabajos realizados» y eso es
-   una afirmación sobre obra propia. Antes de publicar conviene decidirlo:
-   sustituir por fotos reales de Purias, o cambiar el titular por algo como
-   «Ambientes» o «Nuestro estilo», que no afirma autoría.
+2. **De las doce fotos de la galería «Trabajos realizados», solo dos son
+   fotografía real de un trabajo de Purias.** La cocina de roble y lama negra
+   es una **fotografía de Unsplash** (autor: Kam Idris; su licencia permite el
+   uso comercial sin atribución) y el vestidor es una foto real del cliente.
+   Las otras diez —dos cocinas más, las tres de Salón, tres de las cuatro de
+   Dormitorio y las dos de Baño— llevan la misma firma C2PA de Google
+   Generative AI (`SynthID`) que el resto del material generado del sitio.
+   Ninguna de las diez afirma ser un trabajo real de Purias, pero la sección
+   se titula «Trabajos realizados» y eso sí es una afirmación sobre obra
+   propia. Antes de publicar conviene decidirlo: sustituir las generadas por
+   fotos reales, o cambiar el titular por algo como «Ambientes» o «Nuestro
+   estilo», que no afirma autoría. Nota aparte: la segunda foto de Dormitorio
+   es el vestidor —un vestidor, no un dormitorio—; se mantiene ahí a petición
+   expresa después de señalar la disonancia.
 3. **`gafas3d.jpg` (fondo de «Proyecto 3D») también es generada por IA.**
    Sus metadatos C2PA lo confirman: `claim_generator_info: Google C2PA Core
    Generator Library`, `digitalSourceType: trainedAlgorithmicMedia`, marca
@@ -99,11 +105,6 @@ Ordenado por urgencia. Los cuatro primeros bloquean la publicación.
    ilustra un trabajo propio: es una cocina de época que ambienta el titular
    sobre 1970, con el pie «así eran las cocinas de entonces» — que no afirma
    que sea una obra de Purias.
-5. **Diez de las doce fotos de «Espacios» también llevan la firma C2PA de
-   Google Generative AI**, y las otras dos son fotos que la web ya usa en
-   «Trabajos realizados» — ver el detalle completo en «Espacios · explora
-   por categoría» más abajo. Ninguna de las doce es un trabajo real de
-   Purias fotografiado para esta sección.
 
 ---
 
@@ -127,7 +128,7 @@ pérdida deja de verse, y se ha medido para no decirlo de oídas.
 | `logo.png` | `logo-600.png`, 754 px nativos | 49 KB | sin pérdida |
 | `gafas3d.jpg` (6336×2688) | `proyecto-3d-{900,1400,2400}.webp` — fondo de la sección «Proyecto 3D» | 50–229 KB | q92 |
 | `cocinahistorica.jpg` (4800×3584) | `historia-fondo-{900,1400,2400}.webp` — fondo a sangre de «Cincuenta y cinco años…» | 155–766 KB | q90 |
-| 10 fotos de «Espacios» (~5500×3072 cada una) | `espacio-{categoría}-{n}-{700,1050}.webp` + `.jpg` de reserva a 1050 — recorte centrado de 1,8:1 a 3:2 en el propio pipeline | 28–133 KB cada derivado | q88 |
+| 10 fotos generadas de la galería (~5500×3072 cada una) | `galeria-{categoría}-{n}-{800,1400,2200}.webp` + `.jpg` de reserva a 2200 — recorte centrado de 1,8:1 a 3:2 en el propio pipeline | 35–475 KB cada derivado | q88 |
 
 Los vídeos van a **CRF 14 con preset `veryslow`**, por encima del bitrate del
 propio original (2.293 kbps frente a 2.050): no se ha tirado información, solo
@@ -205,55 +206,91 @@ rectángulo fantasma alrededor del logotipo.
 
 ---
 
-## Espacios · explora por categoría
+## Trabajos realizados · galería con carrusel y visor
 
-Sección nueva entre «Trabajos realizados» y «El antes y el después», con
-las mismas proporciones que la galería de esa sección de arriba: Cocinas
-—la especialidad de la casa— ocupa su propia fila a ancho completo, y
-Salón, Dormitorio y Baño se reparten la fila siguiente en proporción
-desigual (1,4 : 1,1 : 0,85). La diferencia es que aquí cada hueco no es
-una foto suelta: es su propio carrusel, que se desliza con el dedo, la
-rueda o el teclado, con un contador «01 / 03» que dice cuántas fotos
-tiene la categoría y en cuál está. El pie de cada foto reutiliza
-literalmente `.trabajo__pie` y `.trabajo__tipo` de la galería de arriba
-— mismo idioma visual, no una segunda versión inventada para esta
-sección.
+Cocinas —la especialidad de la casa— ocupa su propia fila a ancho
+completo; Salón, Dormitorio y Baño se reparten la fila siguiente en
+proporción desigual (1,4 : 1,1 : 0,85). Cada hueco no es una foto suelta:
+es su propio carrusel, que se desliza con el dedo, la rueda o el teclado,
+con un título superpuesto a la foto (degradado oscuro solo en el tercio
+inferior, para no competir con la imagen) y un contador «01 / 03» que
+sigue el gesto real de deslizar. Pinchar cualquier foto la abre en un
+**visor a pantalla completa** para recorrer esa misma categoría en
+detalle, sin el recorte de la tarjeta —`object-fit: contain` en vez de
+`cover`—, con flechas, teclado (`←` `→` `Esc`) y el mismo gesto de
+deslizar.
 
-### De dónde salen las doce fotos, y qué es cada una
+Esta sección existió antes por separado, como «Espacios · explora por
+categoría» entre Trabajos y «El antes y el después», con las mismas
+cuatro categorías y casi las mismas fotos. Se fusionó aquí porque tener
+dos secciones distintas enseñando lo mismo no aportaba nada — y de paso
+desaparece la duplicidad que tenía esa versión: antes la cocina de roble
+y el vestidor aparecían en dos sitios de la página (una vez en Trabajos,
+otra en Espacios); ahora aparecen una sola vez cada uno.
+
+### De dónde salen las fotos, y qué es cada una
 
 Al llegar el material se comprobó con el mismo escaneo C2PA que ya se
-aplica al resto del sitio, y salieron dos cosas que conviene tener
-anotadas:
+aplica al resto del sitio. De las doce fotos, solo dos son fotografía
+real de un trabajo de Purias —la cocina de roble y lama negra, y el
+vestidor—; las otras diez llevan la misma firma C2PA de Google
+Generative AI que el resto del material generado del sitio. El detalle
+completo, con qué foto es cuál, está en el aviso 2 de
+[Pendiente de que lo facilite el cliente](#pendiente-de-que-lo-facilite-el-cliente)
+más arriba.
 
-1. **Diez de las doce están generadas por IA** — la misma firma que
-   `gafas3d.jpg` y `cocinahistorica.jpg` (`Google Generative AI`, marca
-   `SynthID`): las dos de Cocinas (blanca y negra), las tres de Salón, tres
-   de las cuatro de Dormitorio, y las dos de Baño. Ninguna afirma ser un
-   trabajo real de Purias — es ambientación, exactamente el mismo criterio
-   ya aplicado al fondo de «Proyecto 3D».
-2. **Las otras dos no son fotos nuevas: son las mismas imágenes que ya usa
-   «Trabajos realizados».** La primera foto de Cocinas es
-   `kam-idris-…-unsplash.jpg` (la cocina de roble y lama negra, la única
-   fotografía real de toda la galería) — sirve los derivados que ya
-   existían en `Recursos/optimizado/cocina-roble-*`, no unos nuevos. La
-   segunda de Dormitorio es `trabajo3_vestidor.png` — un vestidor, no un
-   dormitorio, reutilizando `trabajo3_vestidor-*`. Se mantuvieron a
-   petición expresa después de señalar la duplicidad, así que la misma
-   foto de la cocina de roble aparece en dos sitios de la página, y
-   «Dormitorio» enseña un vestidor entre sus cuatro fotos.
+El recorte de origen va en el pipeline (`galeria-optimizar.js` en el
+scratchpad, mismo patrón que el resto del sitio): las fuentes llegan en
+~1,8:1 y el archivo se deja en 3:2, recortando el 17 % del ancho,
+centrado, antes de escalar. La fila partida (Salón, Dormitorio, Baño)
+muestra ese archivo 3:2 dentro de un marco 16:9 —un recorte adicional
+del navegador, moderado—, y la fila de Cocinas lo muestra a 2,2:1: la
+primera foto (la cocina de roble) ya trae su propio derivado ancho
+dedicado (`cocina-roble-ancha-*`) sin recorte adicional; las otras dos
+—generadas por IA— se recortan más en el navegador desde su archivo 3:2.
+Se revisó a ojo tras montarlo: el plano queda centrado en la isla en
+ambas, sin cortar nada importante.
 
-El recorte de origen va en el pipeline (`optimizar.js` en el scratchpad,
-mismo patrón que el resto del sitio): las fuentes llegan en ~1,8:1 y el
-archivo se deja en 3:2, así que se recorta el 17 % del ancho, centrado,
-antes de escalar a 700 y 1050 px con `sharp`. La fila partida (Salón,
-Dormitorio, Baño) muestra ese archivo 3:2 dentro de un marco 16:9 —un
-recorte adicional del navegador, moderado, el mismo que ya asumen
-`trabajo2_salon`/`trabajo3_vestidor` en la galería de arriba—, y la fila
-de Cocinas lo muestra a 2,2:1: la primera foto (la cocina de roble) ya
-trae su propio derivado ancho dedicado (`cocina-roble-ancha-*`) sin
-recorte adicional; las otras dos —generadas por IA— sí se recortan más
-en el navegador desde su archivo 3:2. Se revisó a ojo tras montarlo: el
-plano queda centrado en la isla en ambas, sin cortar nada importante.
+### El primer intento se veía borroso: `sizes` no seguía al layout
+
+La primera versión de esta fila reutilizó los derivados de la antigua
+sección «Espacios», generados a 700/1050 px porque ahí vivían en una
+tarjeta de ~512 px de ancho (`sizes="32rem"`). Al convertir Cocinas en
+la fila principal a ancho completo (~1300 px, más del doble), ese
+`sizes` se quedó desactualizado: el navegador seguía pidiendo el archivo
+de 1050 px y lo estiraba para llenar una caja mucho más ancha — visible
+a simple vista, y mucho peor en una pantalla Retina/HiDPI, que pide el
+doble de píxeles de los que el archivo tenía. **El `sizes` de una imagen
+tiene que describir su ancho real en el layout final, no el que tenía en
+un diseño anterior.** Arreglado regenerando las diez fotos afectadas a
+800/1400/2200 px (`galeria-optimizar.js`) y corrigiendo `sizes` en cada
+`<picture>` para que coincida con el ancho real de su columna
+(`90vw` la fila de Cocinas; `38vw`/`30vw`/`23vw` Salón/Dormitorio/Baño).
+
+### El visor: mismo `<picture>`, sin duplicar ninguna URL
+
+`js/galeria.js` no reconstruye las fotos desde cero: cuando se abre el
+visor, **clona el `<picture>` que ya está en la tarjeta** que se pinchó
+(`cloneNode(true)`) y lo mete en su propio carrusel de pantalla
+completa. Ni una URL de imagen ni un texto de pie de foto viven
+duplicados entre la tarjeta y el visor — si se cambia una foto en
+`index.html`, el visor la sigue automáticamente.
+
+Dos detalles de implementación, por la misma razón documentada más abajo
+en «Decisiones que conviene no deshacer sin querer» sobre `scrollLeft` y
+elementos ocultos:
+
+- `construirVisor()` se llama **después** de quitar `hidden` del visor,
+  nunca antes: solo con geometría real puede medirse el ancho de una
+  foto y fijar el `scrollLeft` inicial de golpe, sin animación.
+- Al cerrar, la tarjeta de origen se sincroniza con la última foto vista
+  en el visor (por si el usuario deslizó dentro): se reasigna su
+  `scrollLeft`, lo que dispara el mismo listener que ya actualiza su
+  contador — no hace falta duplicar esa lógica.
+
+El visor es progresivo, no obligatorio: sin JavaScript, los botones
+`.carrusel__abrir` son botones normales sin comportamiento, y la galería
+se sigue recorriendo entera con el scroll nativo de cada tarjeta.
 
 ### Mejora progresiva, no un componente que depende de JavaScript
 
@@ -261,21 +298,15 @@ El HTML base —sin JavaScript— ya es la galería completa: la fila de
 Cocinas y la fila partida de abajo, cada categoría con su propio
 carrusel de `scroll-snap` nativo que responde al dedo, la rueda o el
 teclado sin una sola línea de script, y el total correcto ya escrito en
-el contador («1 / 3», «1 / 4»…). `js/espacios.js` solo añade dos atajos
-sobre esa misma base: las flechas de prev/siguiente, y que el número del
-contador siga el gesto real en vez de quedarse fijo en 1. Si el script
-no llega a cargar, la sección sigue siendo una galería completa y
-usable — no hay nada que dependa de JavaScript para funcionar, solo
-cosas que lo mejoran si está.
+el contador («1 / 3», «1 / 4»…). `js/galeria.js` añade tres cosas sobre
+esa base: las flechas de prev/siguiente, que el contador siga el gesto
+real, y el visor a pantalla completa. Si el script no llega a cargar, la
+sección sigue siendo una galería completa y usable.
 
-Esta sección tuvo antes una versión con pestañas, pin por scroll y una
-transición de elemento compartido vía GSAP (`Flip` + `ScrollTrigger`), y
-después una intermedia con las cuatro categorías en una rejilla de
-tarjetas iguales. Se sustituyó por esta versión —las mismas proporciones
-que «Trabajos realizados»— para que la sección se leyera como parte de
-la misma galería en vez de como un componente aparte, y de paso la web
-sigue en cero dependencias externas: nunca hizo falta recuperar GSAP
-para esto.
+Esta sección tuvo antes, en «Espacios», una versión con pestañas, pin
+por scroll y una transición de elemento compartido vía GSAP (`Flip` +
+`ScrollTrigger`). Al fusionarse aquí no hizo falta recuperar GSAP para
+nada de esto: la web sigue en cero dependencias externas.
 
 ## La paleta
 
@@ -316,20 +347,28 @@ ventana en las cinco piezas.
   en `<span class="fichas__texto">` en vez de ir suelto: sin un elemento que
   envuelva cada parte, `.reveal > *` no tiene qué clipar.
 - **`.reveal--lateral` es la única excepción al lenguaje de cortina**, y a
-  propósito: las tres fotos de «Trabajos realizados» entran deslizándose
-  (`opacity` + `translateX`, sin `clip-path`) en vez de bajo la cortina que
-  usa el resto de `.reveal`. Mismo disparador (`.reveal`/`.es-visible`, el
-  mismo `IntersectionObserver`) y el mismo `--curva`, pero declarado después
-  de `.reveal > *` en la cascada para poder anular su `clip-path` con la
-  misma especificidad. La cocina —la primera— desliza desde la izquierda en
-  0,9 s, la misma duración que ya usa el título al cruzar el marco. El salón
-  y el vestidor entran uno hacia el otro —izquierda y derecha, en espejo,
-  vía `.reveal--lateral-derecha`, que solo cambia el signo del
-  `translateX`— y algo más despacio (1,2 s): es el segundo movimiento de la
-  galería, no el primero, y puede permitirse un recorrido más largo. Sigue
-  reservado a la galería: si se generaliza a más secciones, deja de leerse
-  como acento y pasa a ser el gesto por defecto, que es justo lo que la
-  cortina evita en el resto de la web.
+  propósito: las cuatro categorías de «Trabajos realizados» entran
+  deslizándose (`opacity` + `translateX`, sin `clip-path`) en vez de bajo la
+  cortina que usa el resto de `.reveal`. Mismo disparador (`.reveal`/
+  `.es-visible`, el mismo `IntersectionObserver`) y el mismo `--curva`, pero
+  declarado después de `.reveal > *` en la cascada para poder anular su
+  `clip-path` con la misma especificidad. Cocinas —la primera, la fila
+  principal— desliza desde la izquierda en 0,9 s, la misma duración que ya
+  usa el título al cruzar el marco. Salón, Dormitorio y Baño —la fila
+  partida— entran algo más despacio (1,2 s, vía `:nth-of-type`), y Baño, el
+  último, lo hace desde la derecha en espejo (`.reveal--lateral-derecha`,
+  que solo cambia el signo del `translateX`). Sigue reservado a la galería:
+  si se generaliza a más secciones, deja de leerse como acento y pasa a ser
+  el gesto por defecto, que es justo lo que la cortina evita en el resto de
+  la web.
+- **`scrollLeft` en un carrusel oculto no hace nada.** Asignar `scrollLeft`
+  a un elemento cuyo ancestro tiene `display: none` (por ejemplo, vía
+  `[hidden]`) se descarta en silencio: sin ese viewport de scroll, el
+  navegador no tiene sobre qué aplicar la asignación. El visor de «Trabajos
+  realizados» (`js/galeria.js`) construye su carrusel y fija el `scrollLeft`
+  inicial **después** de quitar `hidden`, nunca antes — si se invierte el
+  orden, el visor siempre abre en la primera foto de la categoría en vez de
+  en la que se pinchó, sin ningún error visible que lo delate.
 - **El objetivo del `.reveal` tiene que ser un elemento de bloque, no en
   línea.** Segunda trampa del mismo mecanismo, distinta de la anterior: si
   `.reveal > *` recorta un `<span>` o un `<em>` en línea cuyo texto envuelve a
@@ -471,8 +510,10 @@ pero obliga a rehacer el recorte cada vez que cambie un texto.
 ## Accesibilidad
 
 Verificado con navegador real, no a ojo: todo el texto pasa el contraste AA
-(la combinación más justa va a 4,55:1), los 18 elementos enfocables tienen
-indicador de foco visible, hay enlace para saltar al contenido, y con
+(la combinación más justa va a 4,55:1), los elementos enfocables tienen
+indicador de foco visible (37 en la carga inicial, contando cada foto de
+la galería y el visor a pantalla completa), hay enlace para saltar al
+contenido, y con
 `prefers-reduced-motion` no se mueve absolutamente nada —el marco aparece ya
 dibujado, el vídeo del hero ni se descarga y la reforma pasa a tener controles
 normales.

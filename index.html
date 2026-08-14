@@ -56,7 +56,6 @@
   </a>
   <nav class="cabecera__nav" aria-label="Principal">
     <a href="#trabajos">Trabajos</a>
-    <a href="#espacios">Espacios</a>
     <a href="#reforma">Antes y después</a>
     <a href="#proyecto">Proyecto 3D</a>
     <a href="#servicios">Servicios</a>
@@ -99,143 +98,94 @@
   </section>
 
 
-  <!-- ─── TRABAJOS ─────────────────────────────────────────── -->
+  <!-- ─── TRABAJOS ─────────────────────────────────────────────────
+       Cocinas —la especialidad de la casa— ocupa su propia fila a
+       ancho completo; Salón, Dormitorio y Baño reparten la fila
+       siguiente en proporción desigual. Cada hueco es su propio
+       carrusel de scroll-snap nativo (funciona sin JavaScript), con un
+       título superpuesto a la foto y un contador «01 / 03» que
+       js/galeria.js mantiene al día. Pinchar cualquier foto abre el
+       visor a pantalla completa del final del body.
+       AVISO: la cocina de roble y el vestidor son fotografía real de
+       Purias; el resto de Salón, Dormitorio y Baño son generadas por
+       IA (firma C2PA de Google) — ver README. -->
   <section class="seccion" id="trabajos" aria-labelledby="t-trabajos">
     <h2 class="titulo" id="t-trabajos">Trabajos <br>realizados</h2>
 
     <div class="galeria">
 
-      <figure class="trabajo trabajo--principal reveal reveal--lateral">
-        <div class="trabajo__marco">
-          <!-- Dos encuadres del mismo original: panorámico en monitor,
-               más alto en móvil, donde una tira de 2,2:1 quedaría en un
-               hilo. El CSS cambia el «aspect-ratio» en el mismo punto. -->
-          <picture>
-            <source type="image/webp" media="(max-width: 900px)"
-              srcset="Recursos/optimizado/cocina-roble-alta-640.webp 640w,
-                      Recursos/optimizado/cocina-roble-alta-900.webp 900w"
-              sizes="100vw">
-            <source type="image/webp"
-              srcset="Recursos/optimizado/cocina-roble-ancha-1100.webp 1100w,
-                      Recursos/optimizado/cocina-roble-ancha-1600.webp 1600w,
-                      Recursos/optimizado/cocina-roble-ancha-2200.webp 2200w"
-              sizes="90vw">
-            <img src="Recursos/optimizado/cocina-roble-ancha-2200.jpg"
-                 width="2200" height="1000" loading="lazy" decoding="async"
-                 alt="Cocina contemporánea con frentes de roble claro y armarios altos de lama vertical negra. Sobre la isla, una lámpara lineal de perfil cobrizo con un tubo de luz ondulado que recorre toda la pared. Encimera de roble macizo con placa de cocción integrada, grifería negra, salpicadero de piedra oscura y vitrina acristalada con cristalería.">
-          </picture>
-        </div>
-        <figcaption class="trabajo__pie">
-          <span class="trabajo__tipo">Cocina</span>
-          <span class="dato">roble y lama negra · luz escultórica · isla con cocción integrada</span>
-        </figcaption>
-      </figure>
-
-      <figure class="trabajo trabajo--ancha reveal reveal--lateral">
-        <div class="trabajo__marco">
-          <picture>
-            <source type="image/webp"
-              srcset="Recursos/optimizado/trabajo2_salon-640.webp 640w,
-                      Recursos/optimizado/trabajo2_salon-1000.webp 1000w,
-                      Recursos/optimizado/trabajo2_salon-1408.webp 1408w"
-              sizes="(max-width: 900px) 100vw, 54vw">
-            <img src="Recursos/optimizado/trabajo2_salon-1408.jpg"
-                 width="1408" height="768" loading="lazy" decoding="async"
-                 alt="Salón luminoso con sofá modular en tono greige, mueble de televisión de nogal retroiluminado, chimenea empotrada, mesa baja de mármol y dos butacas de terciopelo verde oliva.">
-          </picture>
-        </div>
-        <figcaption class="trabajo__pie">
-          <span class="trabajo__tipo">Salón</span>
-          <span class="dato">roble · luz integrada · terciopelo oliva</span>
-        </figcaption>
-      </figure>
-
-      <figure class="trabajo trabajo--estrecha reveal reveal--lateral reveal--lateral-derecha">
-        <div class="trabajo__marco">
-          <picture>
-            <source type="image/webp"
-              srcset="Recursos/optimizado/trabajo3_vestidor-640.webp 640w,
-                      Recursos/optimizado/trabajo3_vestidor-1000.webp 1000w,
-                      Recursos/optimizado/trabajo3_vestidor-1408.webp 1408w"
-              sizes="(max-width: 900px) 100vw, 36vw">
-            <img src="Recursos/optimizado/trabajo3_vestidor-1408.jpg"
-                 width="1408" height="768" loading="lazy" decoding="async"
-                 alt="Vestidor con armarios de puertas de malla metálica en bronce, tiras de luz cálida en cada balda, isla central con encimera de mármol, banco de piel y suelo de madera oscura.">
-          </picture>
-        </div>
-        <figcaption class="trabajo__pie">
-          <span class="trabajo__tipo">Vestidor</span>
-          <span class="dato">malla de bronce · luz en cada balda</span>
-        </figcaption>
-      </figure>
-
-    </div>
-  </section>
-
-
-  <!-- ─── EXPLORA POR ESPACIO ──────────────────────────────────────
-       Mismas proporciones que la GALERÍA de «Trabajos realizados»
-       —fila propia y ancho completo para la cocina, el resto reparte
-       una segunda fila en proporción desigual— con .trabajo__pie y
-       .trabajo__tipo reutilizados tal cual para el pie de cada foto.
-       La diferencia con Trabajos es que cada hueco no es una foto
-       suelta: es su propio carrusel de scroll-snap nativo (funciona
-       sin JavaScript), con un contador «01 / 03» que se actualiza al
-       deslizar y que js/espacios.js mantiene al día.
-       AVISO: la cocina de roble y el vestidor son las mismas fotos que
-       «Trabajos realizados»; el resto son generadas por IA (firma C2PA
-       de Google) — ninguna es un trabajo real de Purias. Ver README.
-       role="group" en vez de <ul>/<li>: no hay <li> sueltos fuera de
-       <ul>/<ol>, así que esta estructura ya es HTML válido tal cual. -->
-  <section class="seccion espacios" id="espacios" aria-labelledby="t-espacios">
-    <h2 class="titulo" id="t-espacios">Explora por <br>espacio</h2>
-
-    <div class="espacios__lista" id="espacios-lista">
-
-      <article class="espacios__categoria espacios__categoria--principal reveal reveal--lateral" data-categoria="cocinas" id="espacios-panel-cocinas">
+      <article class="trabajo trabajo--principal reveal reveal--lateral" data-categoria="cocinas">
         <div class="carrusel">
           <div class="carrusel__pista" role="group" aria-label="Fotos de cocinas">
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/cocina-roble-ancha-1100.webp">
-                  <img src="Recursos/optimizado/cocina-roble-ancha-2200.jpg" width="1100" height="500" loading="lazy" decoding="async"
-                       alt="Cocina contemporánea con frentes de roble claro y armarios altos de lama vertical negra, isla con lámpara lineal escultórica de perfil cobrizo y encimera de roble macizo.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Cocinas</span>
-                <span class="dato">roble y lama negra · luz escultórica</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Cocinas a pantalla completa, foto 1 de 3">
+                <div class="trabajo__marco">
+                  <!-- Dos encuadres del mismo original: panorámico en monitor,
+                       más alto en móvil, donde una tira de 2,2:1 quedaría en un
+                       hilo. El CSS cambia el «aspect-ratio» en el mismo punto. -->
+                  <picture>
+                    <source type="image/webp" media="(max-width: 900px)"
+                      srcset="Recursos/optimizado/cocina-roble-alta-640.webp 640w,
+                              Recursos/optimizado/cocina-roble-alta-900.webp 900w"
+                      sizes="100vw">
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/cocina-roble-ancha-1100.webp 1100w,
+                              Recursos/optimizado/cocina-roble-ancha-1600.webp 1600w,
+                              Recursos/optimizado/cocina-roble-ancha-2200.webp 2200w"
+                      sizes="90vw">
+                    <img src="Recursos/optimizado/cocina-roble-ancha-2200.jpg"
+                         width="2200" height="1000" loading="lazy" decoding="async"
+                         alt="Cocina contemporánea con frentes de roble claro y armarios altos de lama vertical negra. Sobre la isla, una lámpara lineal de perfil cobrizo con un tubo de luz ondulado que recorre toda la pared. Encimera de roble macizo con placa de cocción integrada, grifería negra, salpicadero de piedra oscura y vitrina acristalada con cristalería.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Cocinas</span>
+                  <span class="dato">roble y lama negra · luz escultórica · isla con cocción integrada</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-cocina-blanca-700.webp 700w, Recursos/optimizado/espacio-cocina-blanca-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-cocina-blanca-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Cocina blanca con isla de mármol veteado en tonos dorados a modo de cascada, azulejo biselado en la pared, suelo de roble y lámparas de latón colgantes.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Cocinas</span>
-                <span class="dato">blanco y mármol veteado · latón</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Cocinas a pantalla completa, foto 2 de 3">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-cocina-blanca-800.webp 800w,
+                              Recursos/optimizado/galeria-cocina-blanca-1400.webp 1400w,
+                              Recursos/optimizado/galeria-cocina-blanca-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 90vw">
+                    <img src="Recursos/optimizado/galeria-cocina-blanca-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Cocina blanca con isla de mármol veteado en tonos dorados a modo de cascada, azulejo biselado en la pared, suelo de roble y lámparas de latón colgantes.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Cocinas</span>
+                  <span class="dato">blanco y mármol veteado · latón</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-cocina-negra-700.webp 700w, Recursos/optimizado/espacio-cocina-negra-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-cocina-negra-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Cocina en tonos negros con isla de mármol oscuro a modo de cascada, armarios superiores de cristal estriado, suelo de madera oscura y vistas a una ciudad al fondo.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Cocinas</span>
-                <span class="dato">negro y mármol oscuro · cristal estriado</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Cocinas a pantalla completa, foto 3 de 3">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-cocina-negra-800.webp 800w,
+                              Recursos/optimizado/galeria-cocina-negra-1400.webp 1400w,
+                              Recursos/optimizado/galeria-cocina-negra-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 90vw">
+                    <img src="Recursos/optimizado/galeria-cocina-negra-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Cocina en tonos negros con isla de mármol oscuro a modo de cascada, armarios superiores de cristal estriado, suelo de madera oscura y vistas a una ciudad al fondo.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Cocinas</span>
+                  <span class="dato">negro y mármol oscuro · cristal estriado</span>
+                </div>
+              </button>
             </figure>
 
           </div>
@@ -249,50 +199,71 @@
         </div>
       </article>
 
-      <article class="espacios__categoria reveal reveal--lateral" data-categoria="salon" id="espacios-panel-salon">
+      <article class="trabajo reveal reveal--lateral" data-categoria="salon">
         <div class="carrusel">
           <div class="carrusel__pista" role="group" aria-label="Fotos de salón">
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-salon-1-700.webp 700w, Recursos/optimizado/espacio-salon-1-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-salon-1-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Salón con panel de nogal que integra televisor, armarios y estanterías iluminadas, suelo de parqué en espiga y sofá tapizado en primer plano.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Salón</span>
-                <span class="dato">nogal integral · parqué en espiga</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Salón a pantalla completa, foto 1 de 3">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/trabajo2_salon-640.webp 640w,
+                              Recursos/optimizado/trabajo2_salon-1000.webp 1000w,
+                              Recursos/optimizado/trabajo2_salon-1408.webp 1408w"
+                      sizes="(max-width: 900px) 100vw, 38vw">
+                    <img src="Recursos/optimizado/trabajo2_salon-1408.jpg"
+                         width="1408" height="768" loading="lazy" decoding="async"
+                         alt="Salón luminoso con sofá modular en tono greige, mueble de televisión de nogal retroiluminado, chimenea empotrada, mesa baja de mármol y dos butacas de terciopelo verde oliva.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Salón</span>
+                  <span class="dato">roble · luz integrada · terciopelo oliva</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-salon-2-700.webp 700w, Recursos/optimizado/espacio-salon-2-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-salon-2-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Salón en tonos oscuros con sofá curvo de terciopelo azul marino, dos butacas de piel marrón, mesas de centro redondas en mármol negro y latón, y ventanales con vistas a los rascacielos de la ciudad.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Salón</span>
-                <span class="dato">terciopelo azul marino · vistas a la ciudad</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Salón a pantalla completa, foto 2 de 3">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-salon-2-800.webp 800w,
+                              Recursos/optimizado/galeria-salon-2-1400.webp 1400w,
+                              Recursos/optimizado/galeria-salon-2-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 38vw">
+                    <img src="Recursos/optimizado/galeria-salon-2-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Salón en tonos oscuros con sofá curvo de terciopelo azul marino, dos butacas de piel marrón, mesas de centro redondas en mármol negro y latón, y ventanales con vistas a los rascacielos de la ciudad.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Salón</span>
+                  <span class="dato">terciopelo azul marino · vistas a la ciudad</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-salon-3-700.webp 700w, Recursos/optimizado/espacio-salon-3-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-salon-3-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Salón luminoso con sofá curvo color crudo, butacas de piel cognac, mesa de centro de travertino y ventanales de suelo a techo con vistas a un bosque de pinos al atardecer.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Salón</span>
-                <span class="dato">travertino y piel cognac · vistas al bosque</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Salón a pantalla completa, foto 3 de 3">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-salon-3-800.webp 800w,
+                              Recursos/optimizado/galeria-salon-3-1400.webp 1400w,
+                              Recursos/optimizado/galeria-salon-3-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 38vw">
+                    <img src="Recursos/optimizado/galeria-salon-3-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Salón luminoso con sofá curvo color crudo, butacas de piel cognac, mesa de centro de travertino y ventanales de suelo a techo con vistas a un bosque de pinos al atardecer.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Salón</span>
+                  <span class="dato">travertino y piel cognac · vistas al bosque</span>
+                </div>
+              </button>
             </figure>
 
           </div>
@@ -306,64 +277,92 @@
         </div>
       </article>
 
-      <article class="espacios__categoria reveal reveal--lateral" data-categoria="dormitorio" id="espacios-panel-dormitorio">
+      <article class="trabajo reveal reveal--lateral" data-categoria="dormitorio">
         <div class="carrusel">
           <div class="carrusel__pista" role="group" aria-label="Fotos de dormitorio">
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-dormitorio-1-700.webp 700w, Recursos/optimizado/espacio-dormitorio-1-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-dormitorio-1-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Dormitorio principal con cabecero de fibra tejida a dos aguas, cama de plataforma en madera, chimenea de gas empotrada y balcón acristalado con vistas a la ciudad al anochecer.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Dormitorio</span>
-                <span class="dato">cabecero de fibra tejida · chimenea de gas</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Dormitorio a pantalla completa, foto 1 de 4">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-dormitorio-1-800.webp 800w,
+                              Recursos/optimizado/galeria-dormitorio-1-1400.webp 1400w,
+                              Recursos/optimizado/galeria-dormitorio-1-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 30vw">
+                    <img src="Recursos/optimizado/galeria-dormitorio-1-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Dormitorio principal con cabecero de fibra tejida a dos aguas, cama de plataforma en madera, chimenea de gas empotrada y balcón acristalado con vistas a la ciudad al anochecer.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Dormitorio</span>
+                  <span class="dato">cabecero de fibra tejida · chimenea de gas</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/trabajo3_vestidor-1000.webp">
-                  <img src="Recursos/optimizado/trabajo3_vestidor-1408.jpg" width="1000" height="545" loading="lazy" decoding="async"
-                       alt="Vestidor con armarios de puertas de malla metálica en bronce, tiras de luz cálida en cada balda, isla central con encimera de mármol, banco de piel y suelo de madera oscura.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Dormitorio</span>
-                <span class="dato">malla de bronce · luz en cada balda</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Dormitorio a pantalla completa, foto 2 de 4">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/trabajo3_vestidor-640.webp 640w,
+                              Recursos/optimizado/trabajo3_vestidor-1000.webp 1000w,
+                              Recursos/optimizado/trabajo3_vestidor-1408.webp 1408w"
+                      sizes="(max-width: 900px) 100vw, 30vw">
+                    <img src="Recursos/optimizado/trabajo3_vestidor-1408.jpg"
+                         width="1408" height="768" loading="lazy" decoding="async"
+                         alt="Vestidor con armarios de puertas de malla metálica en bronce, tiras de luz cálida en cada balda, isla central con encimera de mármol, banco de piel y suelo de madera oscura.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Dormitorio</span>
+                  <span class="dato">malla de bronce · luz en cada balda</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-dormitorio-3-700.webp 700w, Recursos/optimizado/espacio-dormitorio-3-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-dormitorio-3-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Dormitorio infantil con litera de madera clara, cajoneras en rosa y verde salvia, estantería con juguetes y una alfombra redonda de rayas.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Dormitorio</span>
-                <span class="dato">litera infantil · tonos pastel</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Dormitorio a pantalla completa, foto 3 de 4">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-dormitorio-3-800.webp 800w,
+                              Recursos/optimizado/galeria-dormitorio-3-1400.webp 1400w,
+                              Recursos/optimizado/galeria-dormitorio-3-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 30vw">
+                    <img src="Recursos/optimizado/galeria-dormitorio-3-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Dormitorio infantil con litera de madera clara, cajoneras en rosa y verde salvia, estantería con juguetes y una alfombra redonda de rayas.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Dormitorio</span>
+                  <span class="dato">litera infantil · tonos pastel</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-dormitorio-4-700.webp 700w, Recursos/optimizado/espacio-dormitorio-4-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-dormitorio-4-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Dormitorio con un mural en acuarela de fondo, cama de nogal, sillón de piel reclinable y una pared de cristal que da a un jardín japonés de musgo y rocas.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Dormitorio</span>
-                <span class="dato">mural en acuarela · jardín japonés</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Dormitorio a pantalla completa, foto 4 de 4">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-dormitorio-4-800.webp 800w,
+                              Recursos/optimizado/galeria-dormitorio-4-1400.webp 1400w,
+                              Recursos/optimizado/galeria-dormitorio-4-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 30vw">
+                    <img src="Recursos/optimizado/galeria-dormitorio-4-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Dormitorio con un mural en acuarela de fondo, cama de nogal, sillón de piel reclinable y una pared de cristal que da a un jardín japonés de musgo y rocas.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Dormitorio</span>
+                  <span class="dato">mural en acuarela · jardín japonés</span>
+                </div>
+              </button>
             </figure>
 
           </div>
@@ -377,36 +376,50 @@
         </div>
       </article>
 
-      <article class="espacios__categoria reveal reveal--lateral reveal--lateral-derecha" data-categoria="bano" id="espacios-panel-bano">
+      <article class="trabajo reveal reveal--lateral reveal--lateral-derecha" data-categoria="bano">
         <div class="carrusel">
           <div class="carrusel__pista" role="group" aria-label="Fotos de baño">
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-bano-1-700.webp 700w, Recursos/optimizado/espacio-bano-1-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-bano-1-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Baño de mármol gris con doble lavabo de sobre encimera sobre mueble de nogal, chimenea de gas empotrada, ducha acristalada y bañera exenta.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Baño</span>
-                <span class="dato">mármol gris · chimenea de gas</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Baño a pantalla completa, foto 1 de 2">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-bano-1-800.webp 800w,
+                              Recursos/optimizado/galeria-bano-1-1400.webp 1400w,
+                              Recursos/optimizado/galeria-bano-1-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 23vw">
+                    <img src="Recursos/optimizado/galeria-bano-1-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Baño de mármol gris con doble lavabo de sobre encimera sobre mueble de nogal, chimenea de gas empotrada, ducha acristalada y bañera exenta.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Baño</span>
+                  <span class="dato">mármol gris · chimenea de gas</span>
+                </div>
+              </button>
             </figure>
 
             <figure class="carrusel__foto">
-              <div class="carrusel__marco">
-                <picture>
-                  <source type="image/webp" srcset="Recursos/optimizado/espacio-bano-2-700.webp 700w, Recursos/optimizado/espacio-bano-2-1050.webp 1050w" sizes="(max-width: 640px) 90vw, 32rem">
-                  <img src="Recursos/optimizado/espacio-bano-2-1050.jpg" width="1050" height="700" loading="lazy" decoding="async"
-                       alt="Baño con mueble de lavabo azul marino, espejo redondo retroiluminado, grifería negra y ducha con paredes de mosaico gris tras una mampara de cristal.">
-                </picture>
-              </div>
-              <figcaption class="trabajo__pie">
-                <span class="trabajo__tipo">Baño</span>
-                <span class="dato">azul marino · mosaico gris</span>
-              </figcaption>
+              <button class="carrusel__abrir" type="button" aria-label="Ver Baño a pantalla completa, foto 2 de 2">
+                <div class="trabajo__marco">
+                  <picture>
+                    <source type="image/webp"
+                      srcset="Recursos/optimizado/galeria-bano-2-800.webp 800w,
+                              Recursos/optimizado/galeria-bano-2-1400.webp 1400w,
+                              Recursos/optimizado/galeria-bano-2-2200.webp 2200w"
+                      sizes="(max-width: 900px) 100vw, 23vw">
+                    <img src="Recursos/optimizado/galeria-bano-2-2200.jpg"
+                         width="2200" height="1467" loading="lazy" decoding="async"
+                         alt="Baño con mueble de lavabo azul marino, espejo redondo retroiluminado, grifería negra y ducha con paredes de mosaico gris tras una mampara de cristal.">
+                  </picture>
+                </div>
+                <div class="trabajo__overlay">
+                  <span class="trabajo__tipo">Baño</span>
+                  <span class="dato">azul marino · mosaico gris</span>
+                </div>
+              </button>
             </figure>
 
           </div>
@@ -422,6 +435,22 @@
 
     </div>
   </section>
+
+  <!-- ─── VISOR · pantalla completa ────────────────────────────────
+       Vacío en el HTML a propósito: js/galeria.js lo rellena clonando
+       el <picture> ya presente en la tarjeta que se pinchó, así que no
+       hay ninguna URL de imagen duplicada aquí. Si JavaScript no carga,
+       este bloque no se ve nunca —los botones «carrusel__abrir» siguen
+       siendo botones normales, sin comportamiento, y la galería de
+       arriba se navega igual con el scroll nativo. -->
+  <div class="visor" id="visor" hidden>
+    <div class="visor__contenido" role="dialog" aria-modal="true" aria-label="Visor de fotos">
+      <button class="visor__cerrar" type="button" aria-label="Cerrar">✕</button>
+      <button class="visor__control visor__control--prev" type="button" aria-label="Foto anterior">‹</button>
+      <div class="visor__pista" id="visor-pista"></div>
+      <button class="visor__control visor__control--next" type="button" aria-label="Foto siguiente">›</button>
+    </div>
+  </div>
 
 
   <!-- ─── ANTES Y DESPUÉS · el scroll mueve el tiempo ──────── -->
@@ -658,7 +687,7 @@
 }
 </script>
 
-<script src="js/espacios.js" defer></script>
+<script src="js/galeria.js" defer></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
