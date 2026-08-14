@@ -372,6 +372,15 @@
   .galeria .trabajo.reveal:nth-of-type(2) > * { transition-delay: 60ms; }
   .galeria .trabajo.reveal:nth-of-type(3) > * { transition-delay: 120ms; }
 
+  .espacios__lista .espacios__categoria.reveal--lateral:nth-of-type(2) > *,
+  .espacios__lista .espacios__categoria.reveal--lateral:nth-of-type(3) > *,
+  .espacios__lista .espacios__categoria.reveal--lateral:nth-of-type(4) > * {
+    transition-duration: 1.2s;
+  }
+  .espacios__lista .espacios__categoria.reveal:nth-of-type(2) > * { transition-delay: 60ms; }
+  .espacios__lista .espacios__categoria.reveal:nth-of-type(3) > * { transition-delay: 120ms; }
+  .espacios__lista .espacios__categoria.reveal:nth-of-type(4) > * { transition-delay: 180ms; }
+
   .fichas li.reveal:nth-child(2) > * { transition-delay: 60ms; }
   .fichas li.reveal:nth-child(3) > * { transition-delay: 120ms; }
 
@@ -678,50 +687,32 @@
 
 
   /* ─── ESPACIOS · explora por categoría ────────────────────────────
-     Cuaderno de muestras: las cuatro categorías se ven a la vez, con
-     el mismo peso — una fila de 4 en escritorio, 2×2 en tablet, apiladas
-     en móvil (ver breakpoints más abajo). Cada tarjeta es su propio
-     carrusel de scroll-snap nativo: funciona igual con o sin JavaScript.
-     js/espacios.js solo añade un contador «01 / 03» que se actualiza al
-     deslizar — sin él, el contador se queda fijo en el total correcto,
-     que ya viene escrito en el HTML. */
+     Mismas proporciones que la GALERÍA de «Trabajos realizados», justo
+     encima: la cocina manda —fila propia, a ancho completo— y el resto
+     se reparte una segunda fila en proporción desigual. La diferencia
+     es que aquí cada hueco no es una foto suelta: es su propio carrusel
+     de scroll-snap nativo, con un contador «01 / 03» que se actualiza
+     al deslizar. El pie de foto reutiliza literalmente .trabajo__pie y
+     .trabajo__tipo — mismo idioma visual, no una segunda versión. */
 
   .espacios__lista {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(1.5rem, 4vw, 2rem);
+    grid-template-columns: 1.4fr 1.1fr 0.85fr;
+    gap: clamp(1.5rem, 3.5vw, 3.25rem);
   }
 
-  @media (min-width: 641px) {
-    .espacios__lista { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1024px) {
-    .espacios__lista { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  /* La tarjeta: mismo trato para las cuatro, sin estado «activa» — es
-     justo lo contrario de la cabecera de pestañas que había antes, cuya
-     tarjeta resaltada rompía la simetría del conjunto. */
   .espacios__categoria {
-    display: flex;
-    flex-direction: column;
+    margin: 0;
     /* Un ítem de grid mide, por defecto, min-width:auto — el ancho sin
-       recortar de la imagen y del pie de foto, que puede superar su
-       reparto en 1fr y desbaratar la simetría de la fila entera. */
+       recortar de la imagen puede superar su reparto en fr y desbaratar
+       la proporción de toda la fila. */
     min-width: 0;
-    padding: clamp(0.85rem, 2vw, 1.15rem);
-    border: 1px solid var(--filete-tenue);
-    border-top-color: color-mix(in oklab, var(--veta) 22%, transparent);
-    background: color-mix(in oklab, var(--veta) 3%, transparent);
   }
 
-  .espacios__nombre {
-    font-family: var(--display);
-    font-variation-settings: 'wdth' 112, 'wght' 500;
-    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.25rem);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 0.9rem;
+  .espacios__categoria--principal { grid-column: 1 / -1; }
+
+  @media (max-width: 900px) {
+    .espacios__lista { grid-template-columns: 1fr; }
   }
 
   /* — El carrusel: funciona igual con o sin JS. El scroll horizontal
@@ -741,39 +732,35 @@
   .carrusel__foto {
     flex: 0 0 100%;
     width: 100%;
+    margin: 0;
     scroll-snap-align: start;
   }
-  /* 3:2 en vez de un 4:3 a la fuerza: las fotos reales llegan en ~1,8:1
-     —muy panorámicas—, y 3:2 pide un recorte de solo el 17% del ancho
-     en el propio pipeline (ver optimizar.js), frente al 44% que habría
-     hecho falta para forzarlas a 4:3. El recorte es del archivo, no del
-     navegador: mismo criterio que la cocina de roble de «Trabajos». */
+
   .carrusel__marco {
-    aspect-ratio: 3 / 2;
     overflow: hidden;
     background: var(--nogal);
   }
   .carrusel__marco img {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
+    filter: saturate(0.94);
   }
-
-  /* Una sola línea con recorte: así las cuatro tarjetas de una fila
-     miden lo mismo aunque un pie de foto sea más largo que otro. */
-  .carrusel__pie {
-    margin-top: 0.6rem;
-    color: var(--hormigon);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  /* Panorámica a 2,2:1 como la pieza principal de «Trabajos», y con el
+     mismo cambio a 3:2 por debajo de los 900px — mismo punto de corte,
+     misma razón: una tira tan ancha se queda en un hilo en pantallas
+     estrechas. La primera foto de Cocinas ya trae un recorte dedicado a
+     2,2:1 (cocina-roble-ancha); las demás se recortan en el navegador. */
+  .espacios__categoria--principal .carrusel__marco img { aspect-ratio: 2.2 / 1; }
+  @media (max-width: 900px) {
+    .espacios__categoria--principal .carrusel__marco img { aspect-ratio: 3 / 2; }
   }
 
   .carrusel__controles {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 0.75rem;
+    margin-top: 0.6rem;
   }
 
   .carrusel__contador {
@@ -795,6 +782,13 @@
     line-height: 1;
     cursor: pointer;
     transition: transform 0.16s var(--curva), background-color 0.25s var(--curva), border-color 0.25s var(--curva);
+  }
+  /* La fila de la cocina es mucho más grande que el resto; sus flechas
+     acompañan esa escala en vez de quedarse en el mismo tamaño diminuto. */
+  .espacios__categoria--principal .carrusel__control {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.15rem;
   }
   @media (hover: hover) and (pointer: fine) {
     .carrusel__control:hover {

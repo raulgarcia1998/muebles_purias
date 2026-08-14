@@ -207,12 +207,17 @@ rectángulo fantasma alrededor del logotipo.
 
 ## Espacios · explora por categoría
 
-Sección nueva entre «Trabajos realizados» y «El antes y el después»: un
-cuaderno de muestras con las cuatro categorías (Cocinas, Salón, Dormitorio,
-Baño) a la vista a la vez y con el mismo peso — una fila de 4 en
-escritorio, 2×2 en tablet, apiladas en móvil. Cada tarjeta es su propio
-carrusel: se desliza con el dedo, la rueda o el teclado, y un contador
-«01 / 03» en la esquina dice cuántas fotos tiene y en cuál está.
+Sección nueva entre «Trabajos realizados» y «El antes y el después», con
+las mismas proporciones que la galería de esa sección de arriba: Cocinas
+—la especialidad de la casa— ocupa su propia fila a ancho completo, y
+Salón, Dormitorio y Baño se reparten la fila siguiente en proporción
+desigual (1,4 : 1,1 : 0,85). La diferencia es que aquí cada hueco no es
+una foto suelta: es su propio carrusel, que se desliza con el dedo, la
+rueda o el teclado, con un contador «01 / 03» que dice cuántas fotos
+tiene la categoría y en cuál está. El pie de cada foto reutiliza
+literalmente `.trabajo__pie` y `.trabajo__tipo` de la galería de arriba
+— mismo idioma visual, no una segunda versión inventada para esta
+sección.
 
 ### De dónde salen las doce fotos, y qué es cada una
 
@@ -237,29 +242,40 @@ anotadas:
    foto de la cocina de roble aparece en dos sitios de la página, y
    «Dormitorio» enseña un vestidor entre sus cuatro fotos.
 
-El recorte va en el pipeline (`optimizar.js` en el scratchpad, mismo
-patrón que el resto del sitio): las fuentes llegan en ~1,8:1 y la tarjeta
-del carrusel es 3:2, así que se recorta el 17 % del ancho, centrado, antes
-de escalar a 700 y 1050 px con `sharp`.
+El recorte de origen va en el pipeline (`optimizar.js` en el scratchpad,
+mismo patrón que el resto del sitio): las fuentes llegan en ~1,8:1 y el
+archivo se deja en 3:2, así que se recorta el 17 % del ancho, centrado,
+antes de escalar a 700 y 1050 px con `sharp`. La fila partida (Salón,
+Dormitorio, Baño) muestra ese archivo 3:2 dentro de un marco 16:9 —un
+recorte adicional del navegador, moderado, el mismo que ya asumen
+`trabajo2_salon`/`trabajo3_vestidor` en la galería de arriba—, y la fila
+de Cocinas lo muestra a 2,2:1: la primera foto (la cocina de roble) ya
+trae su propio derivado ancho dedicado (`cocina-roble-ancha-*`) sin
+recorte adicional; las otras dos —generadas por IA— sí se recortan más
+en el navegador desde su archivo 3:2. Se revisó a ojo tras montarlo: el
+plano queda centrado en la isla en ambas, sin cortar nada importante.
 
 ### Mejora progresiva, no un componente que depende de JavaScript
 
-El HTML base —sin JavaScript— ya es el cuaderno de muestras completo: las
-cuatro categorías en su rejilla, cada una con su propio carrusel de
-`scroll-snap` nativo que responde al dedo, la rueda o el teclado sin una
-sola línea de script, y el total correcto ya escrito en el contador
-(«1 / 3», «1 / 4»…). `js/espacios.js` solo añade dos atajos sobre esa
-misma base: las flechas de prev/siguiente, y que el número del contador
-seguido el gesto real en vez de quedarse fijo en 1. Si el script no llega
-a cargar, la sección sigue siendo una galería completa y usable — no hay
-nada que dependa de JavaScript para funcionar, solo cosas que lo mejoran
-si está.
+El HTML base —sin JavaScript— ya es la galería completa: la fila de
+Cocinas y la fila partida de abajo, cada categoría con su propio
+carrusel de `scroll-snap` nativo que responde al dedo, la rueda o el
+teclado sin una sola línea de script, y el total correcto ya escrito en
+el contador («1 / 3», «1 / 4»…). `js/espacios.js` solo añade dos atajos
+sobre esa misma base: las flechas de prev/siguiente, y que el número del
+contador siga el gesto real en vez de quedarse fijo en 1. Si el script
+no llega a cargar, la sección sigue siendo una galería completa y
+usable — no hay nada que dependa de JavaScript para funcionar, solo
+cosas que lo mejoran si está.
 
 Esta sección tuvo antes una versión con pestañas, pin por scroll y una
-transición de elemento compartido vía GSAP (`Flip` + `ScrollTrigger`). Se
-sustituyó por este cuaderno de muestras más simple porque, con las cuatro
-categorías a la vista de golpe, ya no hace falta animar el paso de una a
-otra — y de paso la web vuelve a quedarse en cero dependencias externas.
+transición de elemento compartido vía GSAP (`Flip` + `ScrollTrigger`), y
+después una intermedia con las cuatro categorías en una rejilla de
+tarjetas iguales. Se sustituyó por esta versión —las mismas proporciones
+que «Trabajos realizados»— para que la sección se leyera como parte de
+la misma galería en vez de como un componente aparte, y de paso la web
+sigue en cero dependencias externas: nunca hizo falta recuperar GSAP
+para esto.
 
 ## La paleta
 
