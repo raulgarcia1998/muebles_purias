@@ -207,11 +207,12 @@ rectángulo fantasma alrededor del logotipo.
 
 ## Espacios · explora por categoría
 
-Sección nueva entre «Trabajos realizados» y «El antes y el después»:
-cuatro categorías (Cocinas, Salón, Dormitorio, Baño) navegables por
-pestañas, con una transición de elemento compartido entre la tarjeta y el
-visor ampliado, activadas tanto por scroll —Cocinas → Salón → Dormitorio →
-Baño, con la sección fijada mientras dura— como por click.
+Sección nueva entre «Trabajos realizados» y «El antes y el después»: un
+cuaderno de muestras con las cuatro categorías (Cocinas, Salón, Dormitorio,
+Baño) a la vista a la vez y con el mismo peso — una fila de 4 en
+escritorio, 2×2 en tablet, apiladas en móvil. Cada tarjeta es su propio
+carrusel: se desliza con el dedo, la rueda o el teclado, y un contador
+«01 / 03» en la esquina dice cuántas fotos tiene y en cuál está.
 
 ### De dónde salen las doce fotos, y qué es cada una
 
@@ -243,32 +244,22 @@ de escalar a 700 y 1050 px con `sharp`.
 
 ### Mejora progresiva, no un componente que depende de JavaScript
 
-El HTML base —sin JavaScript— ya es una galería completa: las cuatro
-categorías apiladas, cada una ya abierta, con su propio carrusel de
-`scroll-snap` nativo que responde al dedo o a la rueda sin una sola línea
-de script. `js/espacios.js` reestructura esto en pestañas con pin por
-scroll **solo si** GSAP cargó entero y el sistema no pide
-`prefers-reduced-motion`; si cualquiera de las dos condiciones falla, la
-página se queda en esa base — no hay una versión a medio construir
-esperando a que JavaScript la termine.
+El HTML base —sin JavaScript— ya es el cuaderno de muestras completo: las
+cuatro categorías en su rejilla, cada una con su propio carrusel de
+`scroll-snap` nativo que responde al dedo, la rueda o el teclado sin una
+sola línea de script, y el total correcto ya escrito en el contador
+(«1 / 3», «1 / 4»…). `js/espacios.js` solo añade dos atajos sobre esa
+misma base: las flechas de prev/siguiente, y que el número del contador
+seguido el gesto real en vez de quedarse fijo en 1. Si el script no llega
+a cargar, la sección sigue siendo una galería completa y usable — no hay
+nada que dependa de JavaScript para funcionar, solo cosas que lo mejoran
+si está.
 
-### GSAP, autoalojado — la única dependencia externa de toda la web
-
-El resto del sitio sigue en cero dependencias; esta sección es la única
-excepción, y a cambio se autoaloja en `js/vendor/` en vez de servirse
-desde un CDN, por el mismo criterio que las tipografías en
-`css/fuentes/`: cero peticiones a terceros.
-
-| Archivo | Para qué |
-|---|---|
-| `gsap.min.js` | El motor de animación |
-| `ScrollTrigger.min.js` | Fija la sección durante el scroll y decide qué categoría toca en cada tramo |
-| `Flip.min.js` | La transición de elemento compartido entre la tarjeta y el visor |
-| `CustomEase.min.js` | Deja usar `--curva` —la misma curva de easing de toda la web— también en GSAP, en vez de recurrir a una de sus curvas con nombre |
-
-GSAP 3.13 es gratuito para cualquier uso, incluido el comercial, desde que
-Webflow adquirió la librería en 2025; antes, `Flip` y `ScrollTrigger`
-formaban parte de los plugins de pago del «Club GreenSock».
+Esta sección tuvo antes una versión con pestañas, pin por scroll y una
+transición de elemento compartido vía GSAP (`Flip` + `ScrollTrigger`). Se
+sustituyó por este cuaderno de muestras más simple porque, con las cuatro
+categorías a la vista de golpe, ya no hace falta animar el paso de una a
+otra — y de paso la web vuelve a quedarse en cero dependencias externas.
 
 ## La paleta
 
@@ -418,24 +409,6 @@ ventana en las cinco piezas.
   salón. Repetirlo lo mata.
 - **La sección de servicios no lleva iconos** y no es un olvido.
 - **No hay cursivas.** La cursiva de Newsreader pesa 129 KB para una frase.
-- **En «Espacios», `scrollLeft` en un carrusel oculto no hace nada.**
-  `entPista.scrollLeft = 0` tiene que ir **después** de `panel.hidden =
-  false`, nunca antes: con el panel todavía oculto (`display: none` vía
-  `[hidden]`), el navegador no tiene ningún viewport de scroll sobre el
-  que aplicar la asignación y la descarta en silencio, sin error. El
-  síntoma no es sutil — la primera foto del carrusel queda casi fuera de
-  vista — pero la causa sí lo es.
-- **Reactivar `scroll-snap-type` justo después de mover contenido dentro
-  del carrusel puede hacer que Chrome reasiente el scroll en la segunda
-  foto en vez de en la primera**, incluso mucho después de que termine
-  cualquier animación relacionada — medido con capturas fotograma a
-  fotograma: pasaba entre 800 y 1000 ms después del click, sin relación
-  aparente con la duración de las animaciones en marcha. La causa exacta
-  no se pudo aislar del todo; el arreglo fue pragmático, no elegante:
-  desactivar `scroll-snap-type` mientras se reordena el DOM, y al
-  reactivarlo, vigilar con `requestAnimationFrame` durante medio segundo
-  y corregir `scrollLeft` en el acto si vuelve a moverse solo. A 60fps no
-  llega a verse.
 
 ## Rendimiento medido
 
