@@ -840,7 +840,20 @@
     scroll-snap-align: start;
   }
 
-  .visor__marco { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
+  /* pan-x deja que el arrastre horizontal siga pasando a la pista (para
+     cambiar de foto); pinch-zoom le dice al navegador que el gesto de
+     pellizcar lo gestiona esta página, no el zoom nativo del sitio
+     entero. js/galeria.js lo cambia a «none» mientras hay zoom activo,
+     para que un solo dedo pase a desplazar la foto en vez de navegar. */
+  .visor__marco {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: pan-x pinch-zoom;
+  }
   .visor__marco img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
 
   .visor__pie {
@@ -878,6 +891,26 @@
   }
   .visor__control--prev { left: clamp(0.5rem, 2.5vw, 1.75rem); }
   .visor__control--next { right: clamp(0.5rem, 2.5vw, 1.75rem); }
+
+  /* Entrada en dos tiempos: la foto vuela desde su miniatura (ver el FLIP
+     en js/galeria.js) y, un instante después, se asientan la cabecera y
+     los controles — para que la foto sea lo primero que se lea, no todo
+     a la vez. El retraso va en la transición, no en un temporizador de
+     JS: más simple y no se puede desincronizar. */
+  .visor__cerrar,
+  .visor__control,
+  .visor__pie {
+    opacity: 0;
+    transition: opacity 0.3s var(--curva), transform 0.3s var(--curva);
+    transition-delay: 0.18s;
+  }
+  .visor__cerrar { transform: scale(0.9); }
+  .visor__control { transform: translateY(-50%) scale(0.9); }
+  .visor__pie { transform: translateY(6px); }
+
+  .visor--visible .visor__cerrar { opacity: 1; transform: scale(1); }
+  .visor--visible .visor__control { opacity: 1; transform: translateY(-50%); }
+  .visor--visible .visor__pie { opacity: 1; transform: translateY(0); }
   @media (hover: hover) and (pointer: fine) {
     .visor__cerrar:hover,
     .visor__control:hover {
