@@ -140,13 +140,14 @@
   .marco--trazado .marco__linea--abajo     { transition-delay: 0.80s; }
   .marco--trazado .marco__linea--izquierda { transition-delay: 1.15s; }
 
-  /* — Las placas —
+  /* — La placa —
      En el logotipo las barras horizontales están enteras y son las dos
-     verticales las que rompe el nombre. Aquí pasa lo mismo: el logo y el
-     menú viven DENTRO del marco, sobre placas opacas; lo único que se
-     sale son los títulos, que cruzan la vertical izquierda.
-     La única rotura del filete es el teléfono, igual que en el logo,
-     donde los guiones se abren para dejarle sitio al número.            */
+     verticales las que rompe el nombre. Aquí pasa lo mismo: el logo vive
+     DENTRO del marco, sobre una placa opaca; lo único que se sale son los
+     títulos, que cruzan la vertical izquierda. El menú, en cambio, no
+     lleva placa —es texto suelto sobre el vídeo, con sombra en vez de
+     caja para seguir leyéndose pase lo que pase por detrás—, porque una
+     lista de enlaces no necesita el mismo peso visual que la firma.      */
 
   /* El logotipo grande se queda arriba del todo y vuelve, grande, en el
      pie. No persigue al lector: si viajara fijo, agujerearía los títulos,
@@ -165,34 +166,28 @@
     pointer-events: none;
   }
 
-  /* Las dos esquinas superiores del marco se convierten en compartimentos:
-     el logotipo ocupa la de la izquierda y el menú la de la derecha. Sus
-     bordes exteriores SON los filetes del marco; los interiores los cierran
-     con el mismo filete. Así no son cajas puestas encima de la página, son
-     dos huecos del propio marco. El fondo es traslúcido y desenfocado para
-     que la cocina siga viéndose por detrás. */
-  .cabecera__logo,
-  .cabecera__nav {
+  /* La esquina superior izquierda del marco se convierte en compartimento:
+     el logotipo la ocupa entera. Su borde exterior ES el filete del marco;
+     el interior lo cierra con el mismo filete. Así no es una caja puesta
+     encima de la página, es un hueco del propio marco. El fondo es
+     traslúcido y desenfocado para que la cocina siga viéndose por detrás. */
+  .cabecera__logo {
     pointer-events: auto;
     background: color-mix(in oklab, var(--noche) 62%, transparent);
     backdrop-filter: blur(18px) saturate(135%);
     -webkit-backdrop-filter: blur(18px) saturate(135%);
     border-bottom: 1px solid var(--filete);
+    border-right: 1px solid var(--filete);
+    display: block;
+    padding: 0.75rem clamp(0.9rem, 2vw, 1.6rem) 0.85rem;
+    margin: calc(-1 * clamp(0.9rem, 2vh, 1.7rem)) 0 0 calc(-1 * clamp(0.75rem, 2.5vw, 2.25rem));
+    line-height: 0;
   }
 
   /* Sin desenfoque disponible, se cierra en opaco antes que dejar el texto
      ilegible sobre el vídeo. */
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .cabecera__logo,
-    .cabecera__nav { background: var(--noche); }
-  }
-
-  .cabecera__logo {
-    display: block;
-    padding: 0.75rem clamp(0.9rem, 2vw, 1.6rem) 0.85rem;
-    margin: calc(-1 * clamp(0.9rem, 2vh, 1.7rem)) 0 0 calc(-1 * clamp(0.75rem, 2.5vw, 2.25rem));
-    border-right: 1px solid var(--filete);
-    line-height: 0;
+    .cabecera__logo { background: var(--noche); }
   }
 
   .cabecera__logo img {
@@ -209,7 +204,10 @@
   }
 
   /* El menú sí acompaña, porque sirve para algo. Va a la derecha, donde
-     los títulos —que empiezan por la izquierda— no llegan. */
+     los títulos —que empiezan por la izquierda— no llegan. Sin placa: es
+     texto suelto flotando sobre el vídeo, en la misma familia expandida
+     del logotipo y los títulos —no la mono de los datos— para que se lea
+     como parte de la firma y no como una ficha técnica. */
   .cabecera__nav {
     position: fixed;
     top: var(--marco);
@@ -221,19 +219,20 @@
     padding: 0.85rem clamp(1rem, 2.2vw, 1.75rem);
     overflow-x: auto;
     scrollbar-width: none;
-    border-left: 1px solid var(--filete);
-    font-family: var(--tecnica);
+    pointer-events: auto;
+    font-family: var(--display);
+    font-variation-settings: 'wdth' 112, 'wght' 430;
     font-size: var(--t-dato);
-    letter-spacing: 0.11em;
+    letter-spacing: 0.17em;
     text-transform: uppercase;
   }
   .cabecera__nav::-webkit-scrollbar { display: none; }
 
-  /* Todas las entradas van en hueso, no en gris. Detrás del panel corre
-     el vídeo, y un gris medio sobre un fondo traslúcido no garantiza
-     contraste si en ese instante pasa un reflejo claro. Lo que distingue
-     a la sección actual es el filete, no el color: así el contraste está
-     asegurado pase lo que pase por detrás. */
+  /* Todas las entradas van en hueso, no en gris: sin placa detrás, el
+     contraste lo da únicamente el texto. Una sombra suave hace de placa
+     invisible —sostiene la lectura si el vídeo pasa por un tramo claro,
+     sin dibujar ninguna caja—. Lo que distingue a la sección actual sigue
+     siendo el filete, no el color. */
   .cabecera__nav a {
     position: relative;
     /* El margen negativo arriba compensa el relleno: crece la caja de
@@ -243,6 +242,7 @@
     padding: 0.5rem 0 0.3rem;
     text-decoration: none;
     color: var(--veta);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 6px 18px rgba(0, 0, 0, 0.35);
     white-space: nowrap;
   }
 
@@ -1290,7 +1290,7 @@
 
     .cabecera { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
 
-    /* Aquí no cabe una placa a la derecha, y una banda fija cruzando la
+    /* Aquí no cabe el menú a la derecha, y una banda fija cruzando la
        pantalla acabaría tapando los títulos, que son lo único que esta
        web tiene de propio. Así que el menú deja de perseguir al lector:
        está arriba, se va con el scroll, y abajo queda siempre el
@@ -1299,13 +1299,10 @@
       position: static;
       align-self: stretch;
       max-width: none;
-      /* Sangra hasta las dos verticales del marco: deja de ser una caja
-         y pasa a ser una banda del propio marco, con filete arriba y
-         abajo. */
       margin-inline: calc(-1 * clamp(0.75rem, 2.5vw, 2.25rem));
       padding-inline: clamp(0.9rem, 3vw, 2.25rem);
-      border-left: 0;
-      border-top: 1px solid var(--filete);
+      /* Sin placa, la única pista de que hay más enlaces por desplazar
+         es que el último se apaga hacia el borde. */
       mask-image: linear-gradient(to right, #000 86%, transparent 100%);
     }
   }
